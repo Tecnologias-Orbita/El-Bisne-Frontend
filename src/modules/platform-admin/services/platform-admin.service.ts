@@ -5,7 +5,10 @@ import type {
   BusinessDraft,
   ExchangeRate,
   PaymentDraft,
+  PaymentFilters,
   PaymentSettings,
+  PlatformCategory,
+  PlatformCategoryDraft,
   RateDraft,
   SubscriptionPayment,
 } from "../types/platform-admin.types";
@@ -41,6 +44,7 @@ function businessPayload(draft: BusinessDraft, editing: boolean) {
     contact_phone: nullable(draft.contact_phone),
     hero_image_url: nullable(draft.hero_image_url),
     logo_url: nullable(draft.logo_url),
+    platform_category_id: draft.platform_category_id || null,
   };
   return editing
     ? { ...shared, is_published: draft.is_published }
@@ -50,6 +54,9 @@ function businessPayload(draft: BusinessDraft, editing: boolean) {
 export const platformAdminService = {
   listBusinesses(): Promise<Business[]> {
     return apiClient("/businesses", authenticatedOptions());
+  },
+  getBusiness(id: string): Promise<Business> {
+    return apiClient(`/businesses/${id}`, authenticatedOptions());
   },
   createBusiness(draft: BusinessDraft): Promise<Business> {
     return apiClient<{ business: Business }>("/auth/register-business", {
@@ -71,6 +78,10 @@ export const platformAdminService = {
         transaction_number: draft.transaction_number.trim(),
         plan: draft.plan,
         phone_number: draft.phone_number.trim(),
+        execution_date: draft.execution_date,
+        expiration_date: draft.expiration_date,
+        amount_paid: draft.amount_paid,
+        platform_category_id: draft.platform_category_id || null,
       },
     }).then((result) => result.business);
   },
@@ -83,8 +94,44 @@ export const platformAdminService = {
   archiveBusiness(id: string): Promise<void> {
     return apiClient(`/businesses/${id}`, authenticatedOptions("DELETE"));
   },
-  listPayments(): Promise<SubscriptionPayment[]> {
-    return apiClient("/platform/admin/subscription-payments", authenticatedOptions());
+  listPlatformCategories(): Promise<PlatformCategory[]> {
+    return apiClient("/platform/admin/categories", authenticatedOptions());
+  },
+  createPlatformCategory(draft: PlatformCategoryDraft): Promise<PlatformCategory> {
+    return apiClient(
+      "/platform/admin/categories",
+      authenticatedOptions("POST", {
+        ...draft,
+        name: draft.name.trim(),
+        slug: draft.slug.trim(),
+        description: nullable(draft.description),
+      }),
+    );
+  },
+  updatePlatformCategory(id: string, draft: PlatformCategoryDraft): Promise<PlatformCategory> {
+    return apiClient(
+      `/platform/admin/categories/${id}`,
+      authenticatedOptions("PUT", {
+        ...draft,
+        name: draft.name.trim(),
+        slug: draft.slug.trim(),
+        description: nullable(draft.description),
+      }),
+    );
+  },
+  deletePlatformCategory(id: string): Promise<void> {
+    return apiClient(`/platform/admin/categories/${id}`, authenticatedOptions("DELETE"));
+  },
+  listPayments(filters?: Partial<PaymentFilters>): Promise<SubscriptionPayment[]> {
+    const query = new URLSearchParams();
+    Object.entries(filters ?? {}).forEach(([key, value]) => {
+      if (value?.trim()) query.set(key, value.trim());
+    });
+    const suffix = query.size ? `?${query.toString()}` : "";
+    return apiClient(
+      `/platform/admin/subscription-payments${suffix}`,
+      authenticatedOptions(),
+    );
   },
   createPayment(draft: PaymentDraft): Promise<SubscriptionPayment> {
     return apiClient(
@@ -97,6 +144,9 @@ export const platformAdminService = {
       transaction_number: draft.transaction_number,
       plan: draft.plan,
       phone_number: draft.phone_number,
+      execution_date: draft.execution_date,
+      expiration_date: draft.expiration_date,
+      amount_paid: draft.amount_paid,
     };
     return apiClient(
       `/platform/admin/subscription-payments/${id}`,

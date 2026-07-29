@@ -14,7 +14,7 @@ export function usePlatformAdmin() {
   useEffect(() => {
     const session = sessionService.get();
     if (!session) {
-      router.replace("/");
+      router.replace("/login");
       return;
     }
 
@@ -24,7 +24,7 @@ export function usePlatformAdmin() {
       .then((currentUser) => {
         if (!currentUser.is_platform_admin) {
           sessionService.clear();
-          router.replace("/");
+          router.replace("/login");
           return;
         }
         if (isActive) {
@@ -34,7 +34,7 @@ export function usePlatformAdmin() {
       })
       .catch(() => {
         sessionService.clear();
-        router.replace("/");
+        router.replace("/login");
       });
 
     return () => {
@@ -44,7 +44,7 @@ export function usePlatformAdmin() {
 
   function logout() {
     sessionService.clear();
-    router.replace("/");
+    router.replace("/login");
   }
 
   return { user, isLoading, logout };

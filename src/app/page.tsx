@@ -1,5 +1,5 @@
-import { LoginPage } from "@/modules/auth/pages/LoginPage";
+import { PlatformHomePage } from "@/modules/platform-public/pages/PlatformHomePage";
 
 export default function Page() {
-  return <LoginPage />;
+  return <PlatformHomePage />;
 }
