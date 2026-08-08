@@ -13,7 +13,7 @@ export function AdminModal({ title, subtitle, onClose, children }: Props) {
       >
         <header className="modal-header">
           <div><h2>{title}</h2><p>{subtitle}</p></div>
-          <button aria-label="Cerrar" onClick={onClose} type="button">×</button>
+          <button aria-label="Volver" className="modal-back-button" onClick={onClose} type="button">← Volver</button>
         </header>
         {children}
       </section>

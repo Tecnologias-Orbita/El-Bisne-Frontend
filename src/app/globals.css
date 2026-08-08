@@ -154,6 +154,8 @@ tbody tr:last-child td { border-bottom: 0; }
 .modal-header h2 { margin: 0; font-size: 1.15rem; }
 .modal-header p { margin: .35rem 0 0; color: var(--muted); font-size: .75rem; }
 .modal-header button { border: 0; color: #768079; background: transparent; font-size: 1.6rem; }
+.modal-header .modal-back-button { font-size: .78rem; font-weight: 800; white-space: nowrap; }
+.onboarding-back { border: 0; color: var(--green); background: transparent; font-weight: 800; cursor: pointer; }
 .admin-form { display: grid; gap: 1rem; padding: 1.5rem; }
 .admin-form label { display: grid; gap: .45rem; color: #3f4943; font-size: .75rem; font-weight: 800; }
 .form-section-title { margin: .35rem 0 -.2rem; padding-bottom: .6rem; border-bottom: 1px solid #eceee8; color: var(--green); font-size: .68rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
