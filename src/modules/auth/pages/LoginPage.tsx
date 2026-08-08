@@ -1,4 +1,5 @@
 import { LoginForm } from "../components/LoginForm";
+import { BackButton } from "@/shared/components/BackButton";
 
 export function LoginPage() {
   return (
@@ -20,6 +21,7 @@ export function LoginPage() {
 
       <section className="login-panel">
         <div className="login-card">
+          <BackButton />
           <div className="mobile-brand">El Bisne</div>
           <p className="eyebrow">Bienvenido de vuelta</p>
           <h2>Inicia sesión</h2>

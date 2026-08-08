@@ -29,7 +29,7 @@ const emptyBusiness: BusinessDraft = {
   owner_password: "",
   name: "",
   slug: "",
-  business_type: "",
+  sells_online: false,
   description: "",
   currency: "CUP",
   timezone: "America/Havana",
@@ -176,7 +176,7 @@ export function usePlatformAdminData(enabled: boolean) {
       owner_password: "",
       name: business.name,
       slug: business.slug,
-      business_type: business.business_type,
+      sells_online: business.sells_online,
       description: business.description ?? "",
       currency: business.currency,
       timezone: business.timezone,
@@ -371,7 +371,7 @@ export function usePlatformAdminData(enabled: boolean) {
     const query = businessSearch.trim().toLocaleLowerCase("es");
     if (!query) return businesses;
     return businesses.filter((business) =>
-      [business.name, business.slug, business.business_type, business.contact_email, business.contact_phone]
+      [business.name, business.slug, business.contact_email, business.contact_phone]
         .filter(Boolean)
         .some((value) => value?.toLocaleLowerCase("es").includes(query)),
     );

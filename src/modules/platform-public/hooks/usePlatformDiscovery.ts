@@ -26,8 +26,8 @@ export function usePlatformDiscovery() {
 
   const sections = useMemo(() => {
     if (!data) return [];
-    const items = tab === "businesses" ? data.businesses : data.products;
-    return data.categories.map((category) => ({ category, items: items.filter((item) => item.platform_category_id === category.id) })).filter((section) => section.items.length);
+    const items = tab === "businesses" ? (data.businesses ?? []) : tab === "products" ? (data.products ?? []) : (data.services ?? []);
+    return (data.categories ?? []).map((category) => ({ category, items: items.filter((item) => item.platform_category_id === category.id) })).filter((section) => section.items.length);
   }, [data, tab]);
 
   return { data, tab, setTab, search, setSearch, categoryId, setCategoryId, isLoading, error, sections };

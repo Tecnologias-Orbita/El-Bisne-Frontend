@@ -11,7 +11,7 @@ export class ApiError extends Error {
 }
 
 type RequestOptions = Omit<RequestInit, "body"> & {
-  body?: unknown;
+  body?: unknown | FormData;
 };
 
 export async function apiClient<T>(
@@ -20,14 +20,20 @@ export async function apiClient<T>(
 ): Promise<T> {
   const headers = new Headers(options.headers);
 
-  if (options.body !== undefined) {
+  const isFormData = options.body instanceof FormData;
+  const requestBody: BodyInit | undefined = options.body === undefined
+    ? undefined
+    : options.body instanceof FormData
+      ? options.body
+      : JSON.stringify(options.body);
+  if (options.body !== undefined && !isFormData) {
     headers.set("Content-Type", "application/json");
   }
 
   const response = await fetch(`${env.apiUrl}${path}`, {
     ...options,
     headers,
-    body: options.body === undefined ? undefined : JSON.stringify(options.body),
+    body: requestBody,
   });
 
   if (!response.ok) {

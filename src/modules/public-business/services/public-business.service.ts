@@ -1,14 +1,18 @@
-import { apiClient } from "@/lib/api/api-client";
-import type { CartItem, CustomerDraft, PublicBusinessData, PublicCatalog } from "../types/public-business.types";
+import { ApiError, apiClient } from "@/lib/api/api-client";
+import type { CartItem, CustomerDraft, PublicBusinessData, PublicCatalog, PublicService } from "../types/public-business.types";
 import type { Business } from "@/modules/platform-admin/types/platform-admin.types";
 
 export const publicBusinessService = {
   async load(slug: string): Promise<PublicBusinessData> {
-    const [business, catalog] = await Promise.all([
+    const [business, catalog, services] = await Promise.all([
       apiClient<Business>(`/public/businesses/${slug}`),
       apiClient<PublicCatalog>(`/public/businesses/${slug}/catalog`),
+      apiClient<PublicService[]>(`/public/businesses/${slug}/services`).catch((error: unknown) => {
+        if (error instanceof ApiError && error.status === 404) return [];
+        throw error;
+      }),
     ]);
-    return { business, catalog };
+    return { business, catalog, services };
   },
   sendOrder(slug: string, customer: CustomerDraft, items: CartItem[]) {
     return apiClient(`/public/businesses/${slug}/orders`, {

@@ -27,8 +27,9 @@ export function usePublicBusiness(slug: string) {
   const setQuantity = (id: string, quantity: number) => persist(quantity < 1 ? cart.filter((item) => item.product.id !== id) : cart.map((item) => item.product.id === id ? { ...item, quantity } : item));
   const clear = () => persist([]);
   const filtered = useMemo(() => data?.catalog.items.filter((product) => [product.name, product.description].some((value) => value?.toLocaleLowerCase("es").includes(search.trim().toLocaleLowerCase("es")))) ?? [], [data, search]);
+  const filteredServices = useMemo(() => data?.services?.filter((service) => [service.name, service.description].some((value) => value?.toLocaleLowerCase("es").includes(search.trim().toLocaleLowerCase("es")))) ?? [], [data, search]);
   const count = cart.reduce((total, item) => total + item.quantity, 0);
   const total = cart.reduce((sum, item) => sum + Number(item.product.price) * item.quantity, 0);
   const quantityFor = (id: string) => cart.find((item) => item.product.id === id)?.quantity ?? 0;
-  return { data, cart, search, setSearch, searchOpen, setSearchOpen, descriptionOpen, setDescriptionOpen, error, filtered, count, total, add, setQuantity, quantityFor, clear };
+  return { data, cart, search, setSearch, searchOpen, setSearchOpen, descriptionOpen, setDescriptionOpen, error, filtered, filteredServices, count, total, add, setQuantity, quantityFor, clear };
 }

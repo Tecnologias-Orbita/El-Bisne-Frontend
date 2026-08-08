@@ -5,7 +5,7 @@ export type Business = {
   name: string;
   slug: string;
   description: string | null;
-  business_type: string;
+  sells_online: boolean;
   currency: string;
   timezone: string;
   contact_email: string | null;
@@ -61,7 +61,7 @@ export type BusinessDraft = {
   owner_password: string;
   name: string;
   slug: string;
-  business_type: string;
+  sells_online: boolean;
   description: string;
   currency: string;
   timezone: string;

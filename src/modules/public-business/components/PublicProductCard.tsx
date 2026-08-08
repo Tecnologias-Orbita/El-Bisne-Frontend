@@ -20,7 +20,7 @@ export function PublicProductCard({ businessSlug, product, canOrder, quantity, o
         {product.image_url ? <Image alt={product.name} fill sizes="(max-width: 780px) 78vw, 320px" src={product.image_url} unoptimized /> : product.name.slice(0, 1)}
       </Link>
       <div className="public-product-copy">
-        <small>{product.product_type}</small>
+        <small>Producto</small>
         <Link className="public-product-title" href={detailHref}><h3>{product.name}</h3></Link>
         <p>{product.description ?? "Consulta todos los detalles de este producto."}</p>
         <div>

@@ -36,7 +36,7 @@ function nullable(value: string): string | null {
 function businessPayload(draft: BusinessDraft, editing: boolean) {
   const shared = {
     name: draft.name.trim(),
-    business_type: draft.business_type.trim(),
+    sells_online: draft.sells_online,
     description: nullable(draft.description),
     currency: draft.currency.toUpperCase(),
     timezone: draft.timezone.trim(),
@@ -67,7 +67,7 @@ export const platformAdminService = {
         full_name: draft.owner_full_name.trim(),
         business_name: draft.name.trim(),
         slug: draft.slug.trim(),
-        business_type: draft.business_type.trim(),
+        sells_online: draft.sells_online,
         description: nullable(draft.description),
         currency: draft.currency.toUpperCase(),
         timezone: draft.timezone.trim(),
