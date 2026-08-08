@@ -6,6 +6,10 @@ const prices = { basic: "1500.00", premium: "2500.00" } as const;
 const isoDate = (date: Date) => date.toISOString().slice(0, 10);
 
 export const onboardingService = {
+  availability(params: { email?: string; slug?: string; transaction_number?: string }): Promise<{ email_available: boolean | null; slug_available: boolean | null; transaction_available: boolean | null }> {
+    const query = new URLSearchParams(params);
+    return apiClient(`/auth/onboarding-availability?${query.toString()}`);
+  },
   async load(): Promise<OnboardingData> {
     const [payment, discovery] = await Promise.all([
       apiClient<PaymentSettings>("/platform/payment-settings"),

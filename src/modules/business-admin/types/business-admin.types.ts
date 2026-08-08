@@ -1,6 +1,6 @@
 import type { Business, PlatformCategory, SubscriptionPayment } from "@/modules/platform-admin/types/platform-admin.types";
 
-export type BusinessAdminSection = "overview" | "business" | "images" | "categories" | "products" | "services" | "orders" | "team" | "subscription";
+export type BusinessAdminSection = "overview" | "business" | "categories" | "products" | "services" | "orders" | "team" | "subscription";
 export type BusinessCategory = { id: string; name: string; slug: string; image_url: string | null };
 export type Product = { id: string; category_id: string | null; platform_category_id: string | null; name: string; slug: string; description: string | null; price: string; currency: string; image_url: string | null; is_available: boolean };
 export type Service = { id: string; category_id: string | null; platform_category_id: string | null; name: string; slug: string; description: string | null; price: string | null; currency: string | null; duration_minutes: number | null; image_url: string | null; is_available: boolean };

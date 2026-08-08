@@ -16,8 +16,11 @@ export function useBusinessWorkspace(businessId: string) {
   const [section, setSection] = useState<BusinessAdminSection>("overview");
   const [businessDraft, setBusinessDraft] = useState<BusinessDraft | null>(null);
   const [categoryDraft, setCategoryDraft] = useState(emptyCategory);
+  const [categoryImage, setCategoryImage] = useState<File | null>(null);
   const [productDraft, setProductDraft] = useState(emptyProduct);
+  const [productImage, setProductImage] = useState<File | null>(null);
   const [serviceDraft, setServiceDraft] = useState(emptyService);
+  const [serviceImage, setServiceImage] = useState<File | null>(null);
   const [memberDraft, setMemberDraft] = useState(emptyMember);
   const [modal, setModal] = useState<"category" | "product" | "service" | "member" | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -26,12 +29,12 @@ export function useBusinessWorkspace(businessId: string) {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (preserveDraft = false) => {
     try {
       setError(null);
       const result = await businessAdminService.load(businessId);
       setData(result);
-      setBusinessDraft({ name: result.business.name, description: result.business.description ?? "", sells_online: result.business.sells_online, currency: result.business.currency, timezone: result.business.timezone, contact_email: result.business.contact_email ?? "", contact_phone: result.business.contact_phone ?? "", is_published: result.business.is_published, hero_image_url: result.business.site.hero_image_url ?? "", logo_url: result.business.site.logo_url ?? "", platform_category_id: result.business.platform_category_id ?? "" });
+      if (!preserveDraft) setBusinessDraft({ name: result.business.name, description: result.business.description ?? "", sells_online: result.business.sells_online, currency: result.business.currency, timezone: result.business.timezone, contact_email: result.business.contact_email ?? "", contact_phone: result.business.contact_phone ?? "", is_published: result.business.is_published, hero_image_url: result.business.site.hero_image_url ?? "", logo_url: result.business.site.logo_url ?? "", platform_category_id: result.business.platform_category_id ?? "" });
     } catch (caught) { setError(caught instanceof Error ? caught.message : "No pudimos cargar el negocio."); }
   }, [businessId]);
 
@@ -48,11 +51,11 @@ export function useBusinessWorkspace(businessId: string) {
     finally { setIsSaving(false); }
   }
   async function saveBusiness(event: FormEvent) { event.preventDefault(); if (businessDraft) await mutate(() => businessAdminService.updateBusiness(businessId, businessDraft), "Negocio actualizado."); }
-  async function createCategory(event: FormEvent) { event.preventDefault(); await mutate(() => businessAdminService.createCategory(businessId, categoryDraft), "Categoría creada."); setCategoryDraft(emptyCategory); }
-  async function createProduct(event: FormEvent) { event.preventDefault(); await mutate(() => businessAdminService.createProduct(businessId, productDraft), "Producto creado."); setProductDraft({ ...emptyProduct, currency: data?.business.currency ?? "CUP" }); }
-  async function createService(event: FormEvent) { event.preventDefault(); await mutate(() => businessAdminService.createService(businessId, serviceDraft), "Servicio creado."); setServiceDraft({ ...emptyService, currency: data?.business.currency ?? "CUP" }); }
+  async function createCategory(event: FormEvent) { event.preventDefault(); await mutate(async () => { const created = await businessAdminService.createCategory(businessId, categoryDraft); if (categoryImage) await businessAdminService.uploadImage(businessId, "category", categoryImage, created.id); setCategoryDraft(emptyCategory); setCategoryImage(null); }, "Categoría creada."); }
+  async function createProduct(event: FormEvent) { event.preventDefault(); await mutate(async () => { const created = await businessAdminService.createProduct(businessId, productDraft); if (productImage) await businessAdminService.uploadImage(businessId, "product", productImage, created.id); setProductDraft({ ...emptyProduct, currency: data?.business.currency ?? "CUP" }); setProductImage(null); }, "Producto creado."); }
+  async function createService(event: FormEvent) { event.preventDefault(); await mutate(async () => { const created = await businessAdminService.createService(businessId, serviceDraft); if (serviceImage) await businessAdminService.uploadImage(businessId, "service", serviceImage, created.id); setServiceDraft({ ...emptyService, currency: data?.business.currency ?? "CUP" }); setServiceImage(null); }, "Servicio creado."); }
   async function addMember(event: FormEvent) { event.preventDefault(); await mutate(() => businessAdminService.addMember(businessId, memberDraft), "Miembro añadido."); setMemberDraft(emptyMember); }
   const navigate = (next: BusinessAdminSection) => { setSection(next); setMenuOpen(false); };
 
-  return { ...admin, data, section, navigate, businessDraft, setBusinessDraft, categoryDraft, setCategoryDraft, productDraft, setProductDraft, serviceDraft, setServiceDraft, memberDraft, setMemberDraft, modal, setModal, menuOpen, setMenuOpen, sidebarCollapsed, setSidebarCollapsed, isSaving, error, notice, load, saveBusiness, createCategory, createProduct, createService, addMember, deleteCategory: (id: string) => mutate(() => businessAdminService.deleteCategory(businessId, id), "Categoría eliminada."), deleteProduct: (id: string) => mutate(() => businessAdminService.deleteProduct(businessId, id), "Producto archivado."), deleteService: (id: string) => mutate(() => businessAdminService.deleteService(businessId, id), "Servicio archivado."), removeMember: (id: string) => mutate(() => businessAdminService.removeMember(businessId, id), "Miembro eliminado."), changeMemberRole: (id: string, role: string) => mutate(() => businessAdminService.changeMemberRole(businessId, id, role), "Rol actualizado."), changeOrderStatus: (id: string, status: string) => mutate(() => businessAdminService.changeOrderStatus(businessId, id, status), "Pedido actualizado.") };
+  return { ...admin, data, section, navigate, businessDraft, setBusinessDraft, categoryDraft, setCategoryDraft, categoryImage, setCategoryImage, productDraft, setProductDraft, productImage, setProductImage, serviceDraft, setServiceDraft, serviceImage, setServiceImage, memberDraft, setMemberDraft, modal, setModal, menuOpen, setMenuOpen, sidebarCollapsed, setSidebarCollapsed, isSaving, error, notice, load, saveBusiness, createCategory, createProduct, createService, addMember, deleteCategory: (id: string) => mutate(() => businessAdminService.deleteCategory(businessId, id), "Categoría eliminada."), deleteProduct: (id: string) => mutate(() => businessAdminService.deleteProduct(businessId, id), "Producto archivado."), deleteService: (id: string) => mutate(() => businessAdminService.deleteService(businessId, id), "Servicio archivado."), removeMember: (id: string) => mutate(() => businessAdminService.removeMember(businessId, id), "Miembro eliminado."), changeMemberRole: (id: string, role: string) => mutate(() => businessAdminService.changeMemberRole(businessId, id, role), "Rol actualizado."), changeOrderStatus: (id: string, status: string) => mutate(() => businessAdminService.changeOrderStatus(businessId, id, status), "Pedido actualizado.") };
 }

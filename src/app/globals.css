@@ -183,6 +183,7 @@ tbody tr:last-child td { border-bottom: 0; }
 .business-admin-shell.sidebar-collapsed .business-sidebar { pointer-events: none; opacity: 0; transform: translateX(-105%); }
 .business-sidebar-brand { display: flex; align-items: center; gap: .7rem; margin-bottom: 1.5rem; border-bottom: 1px solid rgb(255 255 255 / 10%); padding: .4rem .2rem 1.4rem; }
 .business-sidebar-brand > span { display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border-radius: .75rem; color: var(--green-dark); background: var(--lime); font-weight: 900; }
+.business-sidebar-logo { flex: 0 0 auto; width: 2.5rem; height: 2.5rem; border-radius: .75rem; object-fit: cover; background: white; }
 .business-sidebar-brand div { display: grid; min-width: 0; gap: .2rem; }
 .business-sidebar-brand strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .business-sidebar-brand small { color: #aebfb6; font-size: .68rem; }
@@ -727,6 +728,8 @@ tbody tr:last-child td { border-bottom: 0; }
 .onboarding-card label { display: grid; gap: .5rem; color: #334e46; font-size: .8rem; font-weight: 750; }
 .onboarding-card input, .onboarding-card textarea, .onboarding-card select { width: 100%; padding: .95rem 1rem; border: 1px solid #dce3df; border-radius: .85rem; color: #173c33; background: #fafbf8; font: inherit; }
 .onboarding-card label small { color: #7a8782; font-weight: 500; }
+.onboarding-card .field-error { color: #b33b32; font-weight: 700; }
+.onboarding-card [aria-invalid="true"] { border-color: #c94d43; box-shadow: 0 0 0 3px rgb(201 77 67 / 10%); }
 .onboarding-card form > button, .onboarding-buttons button { padding: 1rem 1.2rem; border: 0; border-radius: .85rem; color: white; background: #0b4a3c; font: inherit; font-weight: 800; cursor: pointer; }
 .onboarding-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .onboarding-check { grid-template-columns: auto 1fr; align-items: center; padding: 1rem; border: 1px solid #dce3df; border-radius: 1rem; }
@@ -757,4 +760,23 @@ tbody tr:last-child td { border-bottom: 0; }
 .image-manager-actions { display: flex; align-items: center; gap: .6rem; margin-top: .35rem; }
 .image-manager-actions .action-button { padding: .65rem .75rem; font-size: .72rem; cursor: pointer; }
 .image-manager-actions .danger-link { font-size: .72rem; }
+.business-image-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; padding-bottom: .5rem; }
+.business-information-form { max-width: 70rem; }
+.business-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.business-options .checkbox-label { min-height: 5rem; border: 1px solid var(--line); border-radius: .9rem; padding: 1rem; background: #fafbf8; }
+.business-options .checkbox-label span { display: grid; gap: .25rem; }
+.business-options .checkbox-label small { color: var(--muted); font-weight: 400; }
+.creation-image-field { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px dashed #cbd2ca; border-radius: .9rem; padding: 1rem; background: #f7f9f5; }
+.creation-image-field > div:first-child { display: grid; gap: .3rem; min-width: 0; }
+.creation-image-field small { color: var(--muted); font-weight: 400; }
+.creation-image-field span { overflow: hidden; color: var(--green); font-size: .72rem; text-overflow: ellipsis; white-space: nowrap; }
 @media (max-width: 520px) { .image-manager-card { grid-template-columns: 80px 1fr; } .image-manager-preview { width: 80px; height: 80px; } }
+@media (max-width: 700px) { .business-image-grid, .business-options { grid-template-columns: 1fr; } .creation-image-field { align-items: stretch; flex-direction: column; } }
+
+.business-maintenance { min-height: 100vh; display: grid; grid-template-rows: auto 1fr auto; padding: clamp(1.25rem, 5vw, 4rem); color: white; background: radial-gradient(circle at 75% 20%, rgb(203 239 75 / 18%), transparent 30%), #0a3f35; }
+.business-maintenance > a { width: fit-content; color: #cbef4b; font-weight: 850; text-decoration: none; }
+.business-maintenance > section { width: min(760px, 100%); align-self: center; }
+.business-maintenance section > span { color: #cbef4b; font-size: .75rem; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
+.business-maintenance h1 { margin: 1rem 0; font-size: clamp(3.5rem, 12vw, 8rem); line-height: .9; }
+.business-maintenance p { max-width: 600px; color: #c8d8d3; font-size: clamp(1rem, 2vw, 1.25rem); line-height: 1.65; }
+.business-maintenance section > div { width: fit-content; margin-top: 2rem; padding: .7rem 1rem; border: 1px solid rgb(203 239 75 / 35%); border-radius: 999px; color: #cbef4b; font-weight: 750; }

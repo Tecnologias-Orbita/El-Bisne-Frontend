@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { sessionService } from "@/modules/auth/services/session.service";
 
 const ENTRY_SEEN_KEY = "el-bisne:entry-seen";
 
@@ -13,7 +14,7 @@ export function SiteEntryGate() {
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
-      setIsOpen(window.sessionStorage.getItem(ENTRY_SEEN_KEY) !== "true");
+      setIsOpen(!sessionService.get() && window.sessionStorage.getItem(ENTRY_SEEN_KEY) !== "true");
     }, 0);
     return () => window.clearTimeout(timeoutId);
   }, []);

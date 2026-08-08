@@ -4,8 +4,11 @@ import type { Business } from "@/modules/platform-admin/types/platform-admin.typ
 
 export const publicBusinessService = {
   async load(slug: string): Promise<PublicBusinessData> {
-    const [business, catalog, services] = await Promise.all([
-      apiClient<Business>(`/public/businesses/${slug}`),
+    const business = await apiClient<Business>(`/public/businesses/${slug}`);
+    if (!business.is_published) {
+      return { business, catalog: { business_id: business.id, business_name: business.name, categories: [], items: [], total: 0 }, services: [] };
+    }
+    const [catalog, services] = await Promise.all([
       apiClient<PublicCatalog>(`/public/businesses/${slug}/catalog`),
       apiClient<PublicService[]>(`/public/businesses/${slug}/services`).catch((error: unknown) => {
         if (error instanceof ApiError && error.status === 404) return [];

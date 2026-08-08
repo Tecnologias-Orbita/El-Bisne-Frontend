@@ -209,8 +209,8 @@ export function usePlatformAdminData(enabled: boolean) {
   }
 
   async function archiveBusiness(business: Business) {
-    if (!window.confirm(`¿Archivar “${business.name}”?`)) return;
-    await mutate(() => platformAdminService.archiveBusiness(business.id), "Negocio archivado.");
+    if (!window.confirm(`¿Rechazar y bloquear “${business.name}”? Dejará de ser accesible y se eliminarán sus imágenes.`)) return;
+    await mutate(() => platformAdminService.archiveBusiness(business.id), "Negocio rechazado y bloqueado.");
   }
 
   function newPayment() {

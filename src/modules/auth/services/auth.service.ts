@@ -20,13 +20,15 @@ export const authService = {
     });
   },
 
-  async createPlatformSession(credentials: LoginCredentials): Promise<AuthenticatedUser> {
+  async createSession(credentials: LoginCredentials): Promise<AuthenticatedUser> {
     const tokens = await this.login(credentials);
     const user = await this.getCurrentUser(tokens.access_token);
-    if (!user.is_platform_admin) {
-      throw new Error("Esta cuenta no tiene acceso a la administración de la plataforma.");
-    }
     sessionService.save(tokens);
     return user;
+  },
+  listManagedBusinesses(): Promise<{ id: string }[]> {
+    const session = sessionService.get();
+    if (!session) throw new Error("Tu sesión ha expirado.");
+    return apiClient("/businesses", { headers: { Authorization: `Bearer ${session.access_token}` } });
   },
 };

@@ -4,15 +4,17 @@ import Link from "next/link";
 import { PublicProductCard } from "../components/PublicProductCard";
 import { PublicServiceCard } from "../components/PublicServiceCard";
 import { usePublicBusiness } from "../hooks/usePublicBusiness";
+import { BusinessMaintenance } from "../components/BusinessMaintenance";
 
 export function PublicBusinessPage({ slug }: { slug: string }) {
   const store = usePublicBusiness(slug);
   if (!store.data) return <main className="public-loading">{store.error ?? "Preparando este bisne…"}</main>;
   const { business, catalog, services } = store.data;
+  if (!business.is_published) return <BusinessMaintenance name={business.name} />;
   const canOrder = business.sells_online;
   const whatsappPhone = business.contact_phone?.replace(/\D/g, "");
   const whatsappMessage = encodeURIComponent(`Hola, quisiera información sobre ${business.name}.`);
-  const sections = [...catalog.categories.map((category) => ({ ...category, products: catalog.items.filter((product) => product.category_id === category.id) })), { id: "uncategorized", name: "Otros", slug: "otros", products: catalog.items.filter((product) => !product.category_id) }].filter((section) => section.products.length);
+  const sections = [...catalog.categories.map((category) => ({ ...category, products: catalog.items.filter((product) => product.category_id === category.id) })), { id: "uncategorized", name: "Varios", slug: "varios", products: catalog.items.filter((product) => !product.category_id) }].filter((section) => section.products.length);
   const productCard = (product: (typeof catalog.items)[number]) => <PublicProductCard businessSlug={slug} canOrder={canOrder} key={product.id} onAdd={() => store.add(product)} onSetQuantity={(quantity) => store.setQuantity(product.id, quantity)} product={product} quantity={store.quantityFor(product.id)} />;
 
   return <main className="public-business-page">

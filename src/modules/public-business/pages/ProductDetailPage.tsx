@@ -4,10 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { PublicProductCard } from "../components/PublicProductCard";
 import { usePublicBusiness } from "../hooks/usePublicBusiness";
+import { BusinessMaintenance } from "../components/BusinessMaintenance";
 
 export function ProductDetailPage({ businessSlug, productSlug }: { businessSlug: string; productSlug: string }) {
   const store = usePublicBusiness(businessSlug);
   if (!store.data) return <main className="public-loading">{store.error ?? "Cargando producto…"}</main>;
+  if (!store.data.business.is_published) return <BusinessMaintenance name={store.data.business.name} />;
   const product = store.data.catalog.items.find((item) => item.slug === productSlug);
   if (!product) return <main className="public-loading"><p>Este producto no está disponible.</p><Link href={`/bisne/${businessSlug}`}>Volver al negocio</Link></main>;
   const canOrder = store.data.business.sells_online;
