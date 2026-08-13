@@ -1,4 +1,5 @@
 import { env } from "@/config/env";
+import { rfetch } from "./fetch-api";
 
 export class ApiError extends Error {
   constructor(
@@ -30,7 +31,7 @@ export async function apiClient<T>(
     headers.set("Content-Type", "application/json");
   }
 
-  const response = await fetch(`${env.apiUrl}${path}`, {
+  const response = await rfetch(`${env.apiUrl}${path}`, {
     ...options,
     headers,
     body: requestBody,
