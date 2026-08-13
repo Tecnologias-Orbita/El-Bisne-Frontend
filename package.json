@@ -9,6 +9,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@tecnologias-orbita/orbita-ui-react": "^0.0.2",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest"

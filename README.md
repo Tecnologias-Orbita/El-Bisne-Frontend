@@ -9,9 +9,11 @@ Frontend creado con Next.js, TypeScript, App Router, Tailwind CSS y ESLint.
 
 ## Instalación y arranque
 
+La aplicación depende de dependencias internas de Github Packages para lo cual hay que configurar un token de acceso personal (classic).
+
 ```bash
 cd El-Bisne-Frontend
-npm install
+GITHUB_TOKEN=<token> npm install
 cp .env.example .env.local
 npm run dev
 ```
