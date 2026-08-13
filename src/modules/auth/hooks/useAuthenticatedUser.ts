@@ -15,6 +15,6 @@ export function useAuthenticatedUser() {
     if (!session) { router.replace("/login"); return; }
     void authService.getCurrentUser(session.access_token).then((result) => { setUser(result); setIsLoading(false); }).catch(() => { sessionService.clear(); router.replace("/login"); });
   }, [router]);
-  const logout = () => { sessionService.clear(); router.replace("/login"); };
+  const logout = () => { sessionService.clear(); router.replace("/"); };
   return { user, isLoading, logout };
 }
