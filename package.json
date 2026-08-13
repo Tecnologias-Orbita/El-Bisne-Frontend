@@ -3,25 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --hostname 0.0.0.0",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint ."
   },
   "dependencies": {
-    "@tecnologias-orbita/orbita-ui-react": "^0.0.2",
-    "next": "latest",
-    "react": "latest",
-    "react-dom": "latest"
+    "@tecnologias-orbita/orbita-ui-react": "^0.0.3",
+    "next": "^16.3.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "latest",
+    "@tailwindcss/postcss": "4.3.3",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",
-    "tailwindcss": "latest",
-    "typescript": "latest"
+    "tailwindcss": "4.3.3",
+    "typescript": "~6.0.0"
   }
 }
