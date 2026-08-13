@@ -3,9 +3,7 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { sessionService } from "@/modules/auth/services/session.service";
-
-const ENTRY_SEEN_KEY = "el-bisne:entry-seen";
+import { ENTRY_SEEN_KEY, SESSION_CHANGED_EVENT, sessionService } from "@/modules/auth/services/session.service";
 
 export function SiteEntryGate() {
   const pathname = usePathname();
@@ -13,11 +11,19 @@ export function SiteEntryGate() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      setIsOpen(!sessionService.get() && window.sessionStorage.getItem(ENTRY_SEEN_KEY) !== "true");
-    }, 0);
-    return () => window.clearTimeout(timeoutId);
-  }, []);
+    const updateGate = () => {
+      const isExcludedPage = pathname.startsWith("/admin") || pathname === "/login" || pathname === "/crear-negocio";
+      setIsOpen(!isExcludedPage && !sessionService.get() && window.sessionStorage.getItem(ENTRY_SEEN_KEY) !== "true");
+    };
+    const timeoutId = window.setTimeout(updateGate, 0);
+    window.addEventListener(SESSION_CHANGED_EVENT, updateGate);
+    window.addEventListener("storage", updateGate);
+    return () => {
+      window.clearTimeout(timeoutId);
+      window.removeEventListener(SESSION_CHANGED_EVENT, updateGate);
+      window.removeEventListener("storage", updateGate);
+    };
+  }, [pathname]);
 
   function continueToSite() {
     window.sessionStorage.setItem(ENTRY_SEEN_KEY, "true");

@@ -44,7 +44,7 @@ export function usePlatformAdmin() {
 
   function logout() {
     sessionService.clear();
-    router.replace("/login");
+    router.replace("/");
   }
 
   return { user, isLoading, logout };

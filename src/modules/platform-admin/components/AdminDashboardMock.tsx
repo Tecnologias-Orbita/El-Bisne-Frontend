@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { usePlatformAdmin } from "../hooks/usePlatformAdmin";
 import { usePlatformAdminData } from "../hooks/usePlatformAdminData";
@@ -22,6 +24,7 @@ const sectionTitles: Record<AdminSection, [string, string]> = {
 };
 
 export function AdminDashboard() {
+  const router = useRouter();
   const { user, isLoading, logout } = usePlatformAdmin();
   const data = usePlatformAdminData(Boolean(user));
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -61,6 +64,7 @@ export function AdminDashboard() {
             <h1>{title}</h1>
             <p className="section-subtitle">{subtitle}</p>
           </div>
+          <div className="admin-header-actions"><button className="admin-return-button" onClick={() => router.back()} type="button">← Volver</button><Link className="admin-site-button" href="/">Acceder a El Bisne</Link></div>
           <div className="user-chip"><div><strong>{user?.full_name}</strong><span>{user?.email}</span></div><div className="admin-avatar">{user?.full_name.slice(0, 2).toUpperCase()}</div></div>
         </header>
         {data.error ? <div className="admin-alert error"><span>{data.error}</span><button onClick={data.loadData} type="button">Reintentar</button></div> : null}
