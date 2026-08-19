@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { PublicProductCard } from "../components/PublicProductCard";
+import { QuantitySelector } from "../components/QuantitySelector";
 import { usePublicBusiness } from "../hooks/usePublicBusiness";
 import { BusinessMaintenance } from "../components/BusinessMaintenance";
 
@@ -25,11 +26,11 @@ export function ProductDetailPage({ businessSlug, productSlug }: { businessSlug:
           <h1>{product.name}</h1>
           <strong className="product-detail-price">{product.price} {product.currency}</strong>
           <p className="product-detail-description">{product.description ?? "Contacta al negocio para conocer más detalles sobre este producto."}</p>
-          <div className="product-seller-card"><span>{store.data.business.name.slice(0, 1)}</span><div><small>Ofrecido por</small><strong>{store.data.business.name}</strong><p>{canOrder ? "Este negocio acepta pedidos online." : "Catálogo disponible para consulta."}</p></div></div>
-          {canOrder && product.is_available ? <div className="product-detail-visit"><p>Visita el negocio para seleccionar la cantidad y añadir este producto al carrito.</p><Link href={`/bisne/${businessSlug}#productos`}>Ir al negocio y comprar →</Link></div> : <div className="product-order-note">{product.is_available ? "Este negocio muestra su catálogo para consulta y no recibe pedidos desde la plataforma." : "Este producto no está disponible en este momento."}</div>}
+          <div className="product-seller-card">{store.data.business.site.logo_url ? <Image alt="" aria-hidden="true" className="product-seller-logo" height={52} src={store.data.business.site.logo_url} unoptimized width={52} /> : <span>{store.data.business.name.slice(0, 1)}</span>}<div><small>Ofrecido por</small><strong>{store.data.business.name}</strong><p>{canOrder ? "Este negocio acepta pedidos online." : "Catálogo disponible para consulta."}</p></div></div>
+          {canOrder && product.is_available ? <div className="product-detail-action">{store.quantityFor(product.id) ? <QuantitySelector quantity={store.quantityFor(product.id)} onDecrease={() => store.setQuantity(product.id, store.quantityFor(product.id) - 1)} onIncrease={() => store.setQuantity(product.id, store.quantityFor(product.id) + 1)} /> : null}<button onClick={() => store.add(product)} type="button">Añadir al carrito</button></div> : <div className="product-order-note">{product.is_available ? "Este negocio muestra su catálogo para consulta y no recibe pedidos desde la plataforma." : "Este producto no está disponible en este momento."}</div>}
         </div>
       </section>
-      {related.length ? <section className="related-products"><div><p className="eyebrow">También puede interesarte</p><h2>Productos relacionados</h2></div><div className="product-slider">{related.map((item) => <PublicProductCard businessSlug={businessSlug} canOrder={false} key={item.id} onAdd={() => undefined} onSetQuantity={() => undefined} product={item} quantity={0} />)}</div></section> : null}
+      {related.length ? <section className="related-products"><div><p className="eyebrow">También puede interesarte</p><h2>Productos relacionados</h2></div><div className="product-slider">{related.map((item) => <PublicProductCard businessSlug={businessSlug} canOrder={canOrder} key={item.id} onAdd={() => store.add(item)} onSetQuantity={(quantity) => store.setQuantity(item.id, quantity)} product={item} quantity={store.quantityFor(item.id)} />)}</div></section> : null}
     </main>
   );
 }

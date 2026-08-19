@@ -14,6 +14,19 @@ type RequestOptions = Omit<RequestInit, "body"> & {
   body?: unknown | FormData;
 };
 
+function errorMessage(value: unknown): string | null {
+  if (typeof value === "string") return value.trim() || null;
+  if (Array.isArray(value)) {
+    const messages = value.map(errorMessage).filter((message): message is string => Boolean(message));
+    return messages.length ? messages.join(". ") : null;
+  }
+  if (value && typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    return errorMessage(record.message) ?? errorMessage(record.msg) ?? errorMessage(record.detail);
+  }
+  return null;
+}
+
 export async function apiClient<T>(
   path: string,
   options: RequestOptions = {},
@@ -37,13 +50,9 @@ export async function apiClient<T>(
   });
 
   if (!response.ok) {
-    const payload = (await response.json().catch(() => null)) as
-      | { message?: string; detail?: string; error?: { message?: string } }
-      | null;
+    const payload = await response.json().catch(() => null);
     throw new ApiError(
-      payload?.error?.message ??
-        payload?.message ??
-        payload?.detail ??
+      errorMessage(payload) ??
         `La solicitud falló con estado ${response.status}`,
       response.status,
     );

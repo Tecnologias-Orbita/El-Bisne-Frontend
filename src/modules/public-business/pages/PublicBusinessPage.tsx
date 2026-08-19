@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { PublicProductCard } from "../components/PublicProductCard";
 import { PublicServiceCard } from "../components/PublicServiceCard";
@@ -18,7 +19,7 @@ export function PublicBusinessPage({ slug }: { slug: string }) {
   const productCard = (product: (typeof catalog.items)[number]) => <PublicProductCard businessSlug={slug} canOrder={canOrder} key={product.id} onAdd={() => store.add(product)} onSetQuantity={(quantity) => store.setQuantity(product.id, quantity)} product={product} quantity={store.quantityFor(product.id)} />;
 
   return <main className="public-business-page">
-    <header className="public-business-top"><Link className="platform-home-link" href="/">El Bisne</Link><button onClick={() => store.setSearchOpen(true)}>⌕ Buscar ofertas</button>{canOrder ? <Link href={`/bisne/${slug}/carrito`}>Carrito <b>{store.count}</b></Link> : null}</header>
+    <header className="public-business-top"><Link className="platform-home-link" href="/">El Bisne</Link><div className="public-business-identity">{business.site.logo_url ? <Image alt="" aria-hidden="true" height={32} src={business.site.logo_url} unoptimized width={32} /> : <span aria-hidden="true">{business.name.slice(0, 1)}</span>}<strong>{business.name}</strong></div><button onClick={() => store.setSearchOpen(true)}>⌕ Buscar ofertas</button>{canOrder ? <Link href={`/bisne/${slug}/carrito`}>Carrito <b>{store.count}</b></Link> : null}</header>
     <section className="business-public-hero" style={business.site.hero_image_url ? { backgroundImage: `linear-gradient(180deg, rgb(5 20 14 / 15%), rgb(5 20 14 / 72%)), url(${business.site.hero_image_url})` } : undefined}><h1>{business.name}</h1></section>
     <section className="public-business-intro"><p className="eyebrow">Bienvenido a</p><h2>{business.name}</h2><p className={store.descriptionOpen ? "expanded" : ""}>{business.description ?? "Descubre todo lo que este bisne tiene para ofrecerte."}</p>{business.description && business.description.length > 150 ? <button onClick={() => store.setDescriptionOpen(!store.descriptionOpen)}>{store.descriptionOpen ? "Mostrar menos" : "Mostrar más"}</button> : null}</section>
     {catalog.items.length ? <section className="public-catalog" id="productos"><div className="offer-section-intro"><p className="eyebrow">Catálogo</p><h2>Productos</h2><p>Artículos disponibles en {business.name}.</p></div>{sections.map((section) => <div className="public-category-section" key={section.id}><div className="public-category-heading"><div><small>Categoría</small><h2>{section.name}</h2></div><span>{section.products.length} opciones</span></div><div className="product-slider">{section.products.map(productCard)}</div></div>)}</section> : null}

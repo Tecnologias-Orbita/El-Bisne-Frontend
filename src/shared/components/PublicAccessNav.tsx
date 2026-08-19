@@ -44,7 +44,9 @@ export function PublicAccessNav() {
     setAccess(null);
     router.replace("/");
   }
-  if (pathname.startsWith("/admin") || pathname === "/login" || pathname === "/crear-negocio") return null;
+  // Las páginas de cada negocio ya tienen una barra de navegación propia.
+  // Mantener esta navegación global allí creaba dos cabeceras superpuestas.
+  if (pathname.startsWith("/admin") || pathname.startsWith("/bisne/") || pathname === "/login" || pathname === "/crear-negocio") return null;
   if (checkingSession) return null;
   return access ? <nav aria-label="Cuenta" className="public-access-nav"><Link href={access.href}>{access.label}</Link><button onClick={logout} type="button">Logout</button></nav> : <nav aria-label="Acceso" className="public-access-nav"><Link href="/crear-negocio">Publicar mi negocio</Link><Link href="/login">Iniciar sesión</Link></nav>;
 }
