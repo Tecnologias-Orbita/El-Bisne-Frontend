@@ -1,93 +1,1141 @@
 "use client";
 
+import {
+  ImageField,
+  ImagePicker,
+} from "@/modules/business-admin/components/ImageManager";
+import type {
+  BusinessAdminData,
+  BusinessAdminSection,
+} from "@/modules/business-admin/types/business-admin.types";
+import QRCode from "@/shared/components/QRCode";
 import Image from "next/image";
 import Link from "next/link";
-import { ImageField, ImagePicker } from "@/modules/business-admin/components/ImageManager";
-import type { BusinessAdminData, BusinessAdminSection } from "@/modules/business-admin/types/business-admin.types";
 import { AdminModal } from "../components/AdminModal";
 import { useBusinessWorkspace } from "../hooks/useBusinessWorkspace";
 
 const navigation: [BusinessAdminSection, string][] = [
-  ["overview", "Resumen"], ["business", "Información"], ["categories", "Categorías"],
-  ["products", "Productos"], ["services", "Servicios"], ["orders", "Pedidos"],
-  ["team", "Equipo"], ["subscription", "Suscripción"],
+  ["overview", "Resumen"],
+  ["business", "Información"],
+  ["categories", "Categorías"],
+  ["products", "Productos"],
+  ["services", "Servicios"],
+  ["orders", "Pedidos"],
+  ["team", "Equipo"],
+  ["subscription", "Suscripción"],
 ];
-const nextStatus: Record<string, string | undefined> = { pending: "confirmed", confirmed: "in_progress", in_progress: "completed" };
-const slugify = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+const nextStatus: Record<string, string | undefined> = {
+  pending: "confirmed",
+  confirmed: "in_progress",
+  in_progress: "completed",
+};
+const slugify = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 
 export function BusinessWorkspacePage({ businessId }: { businessId: string }) {
   const workspace = useBusinessWorkspace(businessId);
   const { data } = workspace;
-  if (workspace.isLoading || (!data && !workspace.error)) return <main className="admin-loading">Abriendo el negocio…</main>;
-  if (!data) return <main className="workspace-error"><Link href="/admin">← Volver</Link><div className="admin-alert error">{workspace.error}</div></main>;
+  if (workspace.isLoading || (!data && !workspace.error))
+    return <main className="admin-loading">Abriendo el negocio…</main>;
+  if (!data)
+    return (
+      <main className="workspace-error">
+        <Link href="/admin">← Volver</Link>
+        <div className="admin-alert error">{workspace.error}</div>
+      </main>
+    );
 
   function content(data: BusinessAdminData) {
-    if (workspace.section === "business" && workspace.businessDraft) return (
-      <section className="data-card">
-        <div className="card-heading"><div><h2>Información y apariencia</h2><p>Configura los datos públicos y la identidad visual de tu negocio.</p></div></div>
-        <form className="admin-form business-information-form" onSubmit={workspace.saveBusiness}>
-          <div className="business-image-grid">
-            <ImageField businessId={businessId} kind="logo" label="Logo del negocio" onChanged={() => workspace.load(true)} url={data.business.site.logo_url} />
-            <ImageField businessId={businessId} kind="hero" label="Imagen de portada" onChanged={() => workspace.load(true)} url={data.business.site.hero_image_url} />
+    if (workspace.section === "business" && workspace.businessDraft)
+      return (
+        <section className="data-card">
+          <div className="card-heading">
+            <div>
+              <h2>Información y apariencia</h2>
+              <p>
+                Configura los datos públicos y la identidad visual de tu
+                negocio.
+              </p>
+            </div>
           </div>
-          <label>Nombre<input required value={workspace.businessDraft.name} onChange={(e) => workspace.setBusinessDraft({ ...workspace.businessDraft!, name: e.target.value })} /></label>
-          <label>Descripción<textarea rows={4} value={workspace.businessDraft.description} onChange={(e) => workspace.setBusinessDraft({ ...workspace.businessDraft!, description: e.target.value })} /></label>
-          <div className="form-grid">
-            <label>Email de contacto<input type="email" value={workspace.businessDraft.contact_email} onChange={(e) => workspace.setBusinessDraft({ ...workspace.businessDraft!, contact_email: e.target.value })} /></label>
-            <label>Teléfono<input value={workspace.businessDraft.contact_phone} onChange={(e) => workspace.setBusinessDraft({ ...workspace.businessDraft!, contact_phone: e.target.value })} /></label>
-          </div>
-          <label>Categoría de plataforma<select value={workspace.businessDraft.platform_category_id} onChange={(e) => workspace.setBusinessDraft({ ...workspace.businessDraft!, platform_category_id: e.target.value })}><option value="">Sin categoría</option>{data.platformCategories.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
-          <div className="business-options">
-            <label className="checkbox-label"><input checked={workspace.businessDraft.sells_online} onChange={(e) => workspace.setBusinessDraft({ ...workspace.businessDraft!, sells_online: e.target.checked })} type="checkbox" /><span>Vender online<small>Activa el carrito y la gestión de pedidos.</small></span></label>
-            <label className="checkbox-label"><input checked={workspace.businessDraft.is_published} onChange={(e) => workspace.setBusinessDraft({ ...workspace.businessDraft!, is_published: e.target.checked })} type="checkbox" /><span>Publicar mi bisne<small>Permite que los clientes encuentren el negocio.</small></span></label>
-          </div>
-          <div className="form-footer"><button className="action-button" disabled={workspace.isSaving}>{workspace.isSaving ? "Guardando…" : "Guardar cambios"}</button></div>
-        </form>
-      </section>
-    );
+          <form
+            className="admin-form business-information-form"
+            onSubmit={workspace.saveBusiness}
+          >
+            <div className="business-image-grid">
+              <ImageField
+                businessId={businessId}
+                kind="logo"
+                label="Logo del negocio"
+                onChanged={() => workspace.load(true)}
+                url={data.business.site.logo_url}
+              />
+              <ImageField
+                businessId={businessId}
+                kind="hero"
+                label="Imagen de portada"
+                onChanged={() => workspace.load(true)}
+                url={data.business.site.hero_image_url}
+              />
+            </div>
+            <label>
+              Nombre
+              <input
+                required
+                value={workspace.businessDraft.name}
+                onChange={(e) =>
+                  workspace.setBusinessDraft({
+                    ...workspace.businessDraft!,
+                    name: e.target.value,
+                  })
+                }
+              />
+            </label>
+            <label>
+              Descripción
+              <textarea
+                rows={4}
+                value={workspace.businessDraft.description}
+                onChange={(e) =>
+                  workspace.setBusinessDraft({
+                    ...workspace.businessDraft!,
+                    description: e.target.value,
+                  })
+                }
+              />
+            </label>
+            <div className="form-grid">
+              <label>
+                Email de contacto
+                <input
+                  type="email"
+                  value={workspace.businessDraft.contact_email}
+                  onChange={(e) =>
+                    workspace.setBusinessDraft({
+                      ...workspace.businessDraft!,
+                      contact_email: e.target.value,
+                    })
+                  }
+                />
+              </label>
+              <label>
+                Teléfono
+                <input
+                  value={workspace.businessDraft.contact_phone}
+                  onChange={(e) =>
+                    workspace.setBusinessDraft({
+                      ...workspace.businessDraft!,
+                      contact_phone: e.target.value,
+                    })
+                  }
+                />
+              </label>
+            </div>
+            <label>
+              Categoría de plataforma
+              <select
+                value={workspace.businessDraft.platform_category_id}
+                onChange={(e) =>
+                  workspace.setBusinessDraft({
+                    ...workspace.businessDraft!,
+                    platform_category_id: e.target.value,
+                  })
+                }
+              >
+                <option value="">Sin categoría</option>
+                {data.platformCategories.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div className="business-options">
+              <label className="checkbox-label">
+                <input
+                  checked={workspace.businessDraft.sells_online}
+                  onChange={(e) =>
+                    workspace.setBusinessDraft({
+                      ...workspace.businessDraft!,
+                      sells_online: e.target.checked,
+                    })
+                  }
+                  type="checkbox"
+                />
+                <span>
+                  Vender online
+                  <small>Activa el carrito y la gestión de pedidos.</small>
+                </span>
+              </label>
+              <label className="checkbox-label">
+                <input
+                  checked={workspace.businessDraft.is_published}
+                  onChange={(e) =>
+                    workspace.setBusinessDraft({
+                      ...workspace.businessDraft!,
+                      is_published: e.target.checked,
+                    })
+                  }
+                  type="checkbox"
+                />
+                <span>
+                  Publicar mi bisne
+                  <small>Permite que los clientes encuentren el negocio.</small>
+                </span>
+              </label>
+            </div>
+            <div className="w-max max-w-sm text-sm grid gap-2">
+              <p>
+                <strong>Código Mi Negocio</strong>
+                <br />
+                Compártelo para que otras personas lo vean
+              </p>
+              <QRCode
+                href={"/bisne/" + workspace.data?.business.slug}
+                name={workspace.data?.business.name}
+                size={256}
+              />
+            </div>
+            <div className="form-footer">
+              <button className="action-button" disabled={workspace.isSaving}>
+                {workspace.isSaving ? "Guardando…" : "Guardar cambios"}
+              </button>
+            </div>
+          </form>
+        </section>
+      );
 
-    if (workspace.section === "categories") return (
-      <section className="data-card"><div className="card-heading"><div><h2>Categorías del negocio</h2><p>Organiza el catálogo a tu manera.</p></div><button className="action-button" onClick={() => workspace.openNew("category")}>+ Nueva categoría</button></div>
-        <div className="management-grid">{data.categories.map((item) => <article className="product-management-card" key={item.id}><div className="product-thumb">{item.name.slice(0, 1)}</div><div><strong>{item.name}</strong><small>/{item.slug} · {item.is_visible ? "Visible" : "Oculta"}</small></div><button onClick={() => workspace.editCategory(item)}>Editar</button><button className="danger-link" onClick={() => void workspace.deleteCategory(item.id)}>Eliminar</button></article>)}</div>
-        {!data.categories.length ? <div className="empty-state">Todavía no hay categorías.</div> : null}
-      </section>
+    if (workspace.section === "categories")
+      return (
+        <section className="data-card">
+          <div className="card-heading">
+            <div>
+              <h2>Categorías del negocio</h2>
+              <p>Organiza el catálogo a tu manera.</p>
+            </div>
+            <button
+              className="action-button"
+              onClick={() => workspace.openNew("category")}
+            >
+              + Nueva categoría
+            </button>
+          </div>
+          <div className="management-grid">
+            {data.categories.map((item) => (
+              <article className="product-management-card" key={item.id}>
+                <div className="product-thumb">{item.name.slice(0, 1)}</div>
+                <div>
+                  <strong>{item.name}</strong>
+                  <small>
+                    /{item.slug} · {item.is_visible ? "Visible" : "Oculta"}
+                  </small>
+                </div>
+                <button onClick={() => workspace.editCategory(item)}>
+                  Editar
+                </button>
+                <button
+                  className="danger-link"
+                  onClick={() => void workspace.deleteCategory(item.id)}
+                >
+                  Eliminar
+                </button>
+              </article>
+            ))}
+          </div>
+          {!data.categories.length ? (
+            <div className="empty-state">Todavía no hay categorías.</div>
+          ) : null}
+        </section>
+      );
+    if (workspace.section === "products")
+      return (
+        <section className="data-card">
+          <div className="card-heading">
+            <div>
+              <h2>Productos</h2>
+              <p>Gestiona los artículos del catálogo.</p>
+            </div>
+            <button
+              className="action-button"
+              onClick={() => workspace.openNew("product")}
+            >
+              + Nuevo producto
+            </button>
+          </div>
+          <div className="management-grid">
+            {data.products.map((item) => (
+              <article className="product-management-card" key={item.id}>
+                <div className="product-thumb">
+                  {item.image_url ? (
+                    <Image
+                      alt=""
+                      height={52}
+                      src={item.image_url}
+                      unoptimized
+                      width={52}
+                    />
+                  ) : (
+                    item.name.slice(0, 1)
+                  )}
+                </div>
+                <div>
+                  <strong>{item.name}</strong>
+                  <span>
+                    {item.price} {item.currency}
+                  </span>
+                  <small>
+                    {item.is_available ? "Disponible" : "No disponible"} ·{" "}
+                    {item.is_published ? "Publicado" : "Borrador"}
+                  </small>
+                </div>
+                <button onClick={() => workspace.editProduct(item)}>
+                  Editar
+                </button>
+                <button
+                  className="danger-link"
+                  onClick={() => void workspace.deleteProduct(item.id)}
+                >
+                  Archivar
+                </button>
+              </article>
+            ))}
+          </div>
+          {!data.products.length ? (
+            <div className="empty-state">Todavía no hay productos.</div>
+          ) : null}
+        </section>
+      );
+    if (workspace.section === "services")
+      return (
+        <section className="data-card">
+          <div className="card-heading">
+            <div>
+              <h2>Servicios</h2>
+              <p>Presenta tu experiencia sin convertirla en una tienda.</p>
+            </div>
+            <button
+              className="action-button"
+              onClick={() => workspace.openNew("service")}
+            >
+              + Nuevo servicio
+            </button>
+          </div>
+          <div className="management-grid">
+            {data.services.map((item) => (
+              <article className="product-management-card" key={item.id}>
+                <div className="product-thumb">
+                  {item.image_url ? (
+                    <Image
+                      alt=""
+                      height={52}
+                      src={item.image_url}
+                      unoptimized
+                      width={52}
+                    />
+                  ) : (
+                    item.name.slice(0, 1)
+                  )}
+                </div>
+                <div>
+                  <strong>{item.name}</strong>
+                  <span>
+                    {item.price
+                      ? `Desde ${item.price} ${item.currency}`
+                      : "Precio a consultar"}
+                  </span>
+                  <small>
+                    {item.is_available ? "Disponible" : "No disponible"} ·{" "}
+                    {item.is_published ? "Publicado" : "Borrador"}
+                  </small>
+                </div>
+                <button onClick={() => workspace.editService(item)}>
+                  Editar
+                </button>
+                <button
+                  className="danger-link"
+                  onClick={() => void workspace.deleteService(item.id)}
+                >
+                  Archivar
+                </button>
+              </article>
+            ))}
+          </div>
+          {!data.services.length ? (
+            <div className="empty-state">Todavía no hay servicios.</div>
+          ) : null}
+        </section>
+      );
+    if (workspace.section === "team")
+      return (
+        <section className="data-card">
+          <div className="card-heading">
+            <div>
+              <h2>Equipo</h2>
+              <p>Personas con acceso a la administración.</p>
+            </div>
+            <button
+              className="action-button"
+              onClick={() => workspace.openNew("member")}
+            >
+              + Añadir persona
+            </button>
+          </div>
+          <div className="management-grid">
+            {data.members.map((item) => (
+              <article className="management-card" key={item.id}>
+                <div>
+                  <strong>{item.full_name}</strong>
+                  <small>{item.email}</small>
+                </div>
+                <select
+                  value={item.role}
+                  onChange={(e) =>
+                    void workspace.changeMemberRole(
+                      item.user_id,
+                      e.target.value,
+                    )
+                  }
+                  disabled={item.role === "owner"}
+                >
+                  <option value="owner">Owner</option>
+                  <option value="admin">Admin</option>
+                  <option value="editor">Editor</option>
+                  <option value="viewer">Viewer</option>
+                </select>
+                {item.role !== "owner" ? (
+                  <button
+                    className="danger-link"
+                    onClick={() => void workspace.removeMember(item.user_id)}
+                  >
+                    Quitar
+                  </button>
+                ) : null}
+              </article>
+            ))}
+          </div>
+        </section>
+      );
+    if (workspace.section === "orders")
+      return (
+        <section className="data-card">
+          <div className="card-heading">
+            <div>
+              <h2>Pedidos</h2>
+              <p>Seguimiento del trabajo del negocio.</p>
+            </div>
+          </div>
+          <div className="management-grid">
+            {data.orders.map((item) => (
+              <article className="management-card" key={item.id}>
+                <div>
+                  <strong>{item.order_number}</strong>
+                  <small>
+                    {item.total} {item.currency}
+                  </small>
+                </div>
+                <span className="status-pill published">{item.status}</span>
+                {nextStatus[item.status] ? (
+                  <button
+                    onClick={() =>
+                      void workspace.changeOrderStatus(
+                        item.id,
+                        nextStatus[item.status]!,
+                      )
+                    }
+                  >
+                    Pasar a {nextStatus[item.status]}
+                  </button>
+                ) : null}
+              </article>
+            ))}
+          </div>
+          {!data.orders.length ? (
+            <div className="empty-state">No hay pedidos todavía.</div>
+          ) : null}
+        </section>
+      );
+    if (workspace.section === "subscription")
+      return (
+        <section className="data-card">
+          <div className="card-heading">
+            <div>
+              <h2>Suscripción</h2>
+              <p>Pagos realizados a la plataforma.</p>
+            </div>
+          </div>
+          <div className="management-grid">
+            {data.payments.map((item) => (
+              <article className="management-card" key={item.id}>
+                <div>
+                  <strong>{item.transaction_number}</strong>
+                  <small>
+                    {item.execution_date} → {item.expiration_date}
+                  </small>
+                </div>
+                <span className={`plan-pill ${item.plan}`}>{item.plan}</span>
+                <strong>{item.amount_paid}</strong>
+              </article>
+            ))}
+          </div>
+        </section>
+      );
+    return (
+      <div className="section-stack">
+        <div className="business-welcome">
+          <div>
+            <p className="eyebrow">Tu negocio</p>
+            <h2>{data.business.name}</h2>
+            <p>
+              {data.business.description ??
+                "Completa la información de tu bisne para comenzar."}
+            </p>
+          </div>
+          {data.business.site.logo_url ? (
+            <Image
+              alt={`Logo de ${data.business.name}`}
+              height={96}
+              src={data.business.site.logo_url}
+              unoptimized
+              width={96}
+            />
+          ) : (
+            <span>{data.business.name.slice(0, 1)}</span>
+          )}
+        </div>
+        <div className="metric-grid">
+          <article className="metric-card">
+            <p>Visitas</p>
+            <strong>{data.analytics.visits}</strong>
+            <span>Al sitio público</span>
+          </article>
+          <article className="metric-card">
+            <p>Pedidos</p>
+            <strong>{data.analytics.orders}</strong>
+            <span>{data.analytics.completed_orders} completados</span>
+          </article>
+          <article className="metric-card">
+            <p>Conversión</p>
+            <strong>{data.analytics.conversion_rate}%</strong>
+            <span>{data.analytics.product_views} vistas de productos</span>
+          </article>
+        </div>
+      </div>
     );
-    if (workspace.section === "products") return (
-      <section className="data-card"><div className="card-heading"><div><h2>Productos</h2><p>Gestiona los artículos del catálogo.</p></div><button className="action-button" onClick={() => workspace.openNew("product")}>+ Nuevo producto</button></div>
-        <div className="management-grid">{data.products.map((item) => <article className="product-management-card" key={item.id}><div className="product-thumb">{item.image_url ? <Image alt="" height={52} src={item.image_url} unoptimized width={52} /> : item.name.slice(0, 1)}</div><div><strong>{item.name}</strong><span>{item.price} {item.currency}</span><small>{item.is_available ? "Disponible" : "No disponible"} · {item.is_published ? "Publicado" : "Borrador"}</small></div><button onClick={() => workspace.editProduct(item)}>Editar</button><button className="danger-link" onClick={() => void workspace.deleteProduct(item.id)}>Archivar</button></article>)}</div>
-        {!data.products.length ? <div className="empty-state">Todavía no hay productos.</div> : null}
-      </section>
-    );
-    if (workspace.section === "services") return (
-      <section className="data-card"><div className="card-heading"><div><h2>Servicios</h2><p>Presenta tu experiencia sin convertirla en una tienda.</p></div><button className="action-button" onClick={() => workspace.openNew("service")}>+ Nuevo servicio</button></div>
-        <div className="management-grid">{data.services.map((item) => <article className="product-management-card" key={item.id}><div className="product-thumb">{item.image_url ? <Image alt="" height={52} src={item.image_url} unoptimized width={52} /> : item.name.slice(0, 1)}</div><div><strong>{item.name}</strong><span>{item.price ? `Desde ${item.price} ${item.currency}` : "Precio a consultar"}</span><small>{item.is_available ? "Disponible" : "No disponible"} · {item.is_published ? "Publicado" : "Borrador"}</small></div><button onClick={() => workspace.editService(item)}>Editar</button><button className="danger-link" onClick={() => void workspace.deleteService(item.id)}>Archivar</button></article>)}</div>
-        {!data.services.length ? <div className="empty-state">Todavía no hay servicios.</div> : null}
-      </section>
-    );
-    if (workspace.section === "team") return <section className="data-card"><div className="card-heading"><div><h2>Equipo</h2><p>Personas con acceso a la administración.</p></div><button className="action-button" onClick={() => workspace.openNew("member")}>+ Añadir persona</button></div><div className="management-grid">{data.members.map((item) => <article className="management-card" key={item.id}><div><strong>{item.full_name}</strong><small>{item.email}</small></div><select value={item.role} onChange={(e) => void workspace.changeMemberRole(item.user_id, e.target.value)} disabled={item.role === "owner"}><option value="owner">Owner</option><option value="admin">Admin</option><option value="editor">Editor</option><option value="viewer">Viewer</option></select>{item.role !== "owner" ? <button className="danger-link" onClick={() => void workspace.removeMember(item.user_id)}>Quitar</button> : null}</article>)}</div></section>;
-    if (workspace.section === "orders") return <section className="data-card"><div className="card-heading"><div><h2>Pedidos</h2><p>Seguimiento del trabajo del negocio.</p></div></div><div className="management-grid">{data.orders.map((item) => <article className="management-card" key={item.id}><div><strong>{item.order_number}</strong><small>{item.total} {item.currency}</small></div><span className="status-pill published">{item.status}</span>{nextStatus[item.status] ? <button onClick={() => void workspace.changeOrderStatus(item.id, nextStatus[item.status]!)}>Pasar a {nextStatus[item.status]}</button> : null}</article>)}</div>{!data.orders.length ? <div className="empty-state">No hay pedidos todavía.</div> : null}</section>;
-    if (workspace.section === "subscription") return <section className="data-card"><div className="card-heading"><div><h2>Suscripción</h2><p>Pagos realizados a la plataforma.</p></div></div><div className="management-grid">{data.payments.map((item) => <article className="management-card" key={item.id}><div><strong>{item.transaction_number}</strong><small>{item.execution_date} → {item.expiration_date}</small></div><span className={`plan-pill ${item.plan}`}>{item.plan}</span><strong>{item.amount_paid}</strong></article>)}</div></section>;
-    return <div className="section-stack"><div className="business-welcome"><div><p className="eyebrow">Tu negocio</p><h2>{data.business.name}</h2><p>{data.business.description ?? "Completa la información de tu bisne para comenzar."}</p></div>{data.business.site.logo_url ? <Image alt={`Logo de ${data.business.name}`} height={96} src={data.business.site.logo_url} unoptimized width={96} /> : <span>{data.business.name.slice(0, 1)}</span>}</div><div className="metric-grid"><article className="metric-card"><p>Visitas</p><strong>{data.analytics.visits}</strong><span>Al sitio público</span></article><article className="metric-card"><p>Pedidos</p><strong>{data.analytics.orders}</strong><span>{data.analytics.completed_orders} completados</span></article><article className="metric-card"><p>Conversión</p><strong>{data.analytics.conversion_rate}%</strong><span>{data.analytics.product_views} vistas de productos</span></article></div></div>;
   }
 
-  const visibleNavigation = navigation.filter(([id]) => id !== "orders" || data.business.sells_online);
+  const visibleNavigation = navigation.filter(
+    ([id]) => id !== "orders" || data.business.sells_online,
+  );
   const businessLogo = data.business.site.logo_url;
   return (
-    <main className={`business-admin-shell ${workspace.sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
-      <button className={`sidebar-scrim ${workspace.menuOpen ? "visible" : ""}`} onClick={() => workspace.setMenuOpen(false)} />
+    <main
+      className={`business-admin-shell ${workspace.sidebarCollapsed ? "sidebar-collapsed" : ""}`}
+    >
+      <button
+        className={`sidebar-scrim ${workspace.menuOpen ? "visible" : ""}`}
+        onClick={() => workspace.setMenuOpen(false)}
+      />
       <aside className={`business-sidebar ${workspace.menuOpen ? "open" : ""}`}>
-        <div className="business-sidebar-brand"><button onClick={() => workspace.setMenuOpen(false)}>×</button>{businessLogo ? <Image alt={`Logo de ${data.business.name}`} className="business-sidebar-logo" height={40} src={businessLogo} unoptimized width={40} /> : <span>{data.business.name.slice(0, 1)}</span>}<div><strong>{data.business.name}</strong><small>Administración</small></div></div>
-        <button className="desktop-sidebar-collapse" onClick={() => workspace.setSidebarCollapsed(true)} type="button"><span>←</span> Ocultar menú</button>
-        <nav>{visibleNavigation.map(([id, label]) => <button className={workspace.section === id ? "active" : ""} key={id} onClick={() => workspace.navigate(id)}>{label}</button>)}</nav>
-        {workspace.user?.is_platform_admin ? <Link href="/admin">← Panel de plataforma</Link> : null}
+        <div className="business-sidebar-brand">
+          <button onClick={() => workspace.setMenuOpen(false)}>×</button>
+          {businessLogo ? (
+            <Image
+              alt={`Logo de ${data.business.name}`}
+              className="business-sidebar-logo"
+              height={40}
+              src={businessLogo}
+              unoptimized
+              width={40}
+            />
+          ) : (
+            <span>{data.business.name.slice(0, 1)}</span>
+          )}
+          <div>
+            <strong>{data.business.name}</strong>
+            <small>Administración</small>
+          </div>
+        </div>
+        <button
+          className="desktop-sidebar-collapse"
+          onClick={() => workspace.setSidebarCollapsed(true)}
+          type="button"
+        >
+          <span>←</span> Ocultar menú
+        </button>
+        <nav>
+          {visibleNavigation.map(([id, label]) => (
+            <button
+              className={workspace.section === id ? "active" : ""}
+              key={id}
+              onClick={() => workspace.navigate(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+        {workspace.user?.is_platform_admin ? (
+          <Link href="/admin">← Panel de plataforma</Link>
+        ) : null}
         <button onClick={workspace.logout}>Cerrar sesión</button>
       </aside>
-      <section className="business-admin-content"><header className="business-admin-header"><button className="menu-button" onClick={() => workspace.setMenuOpen(true)}><span /><span /><span /></button><button aria-label={workspace.sidebarCollapsed ? "Mostrar barra lateral" : "Ocultar barra lateral"} className="desktop-sidebar-trigger" onClick={() => workspace.setSidebarCollapsed(!workspace.sidebarCollapsed)} type="button"><span /><span /><span /></button><div><p className="eyebrow">Administración del negocio</p><h1>{navigation.find(([id]) => id === workspace.section)?.[1]}</h1></div><Link className="visit-business-button" href={`/bisne/${data.business.slug}`} target="_blank">Visitar mi bisne</Link></header>{workspace.error ? <div className="admin-alert error">{workspace.error}</div> : null}{workspace.notice ? <div className="admin-alert success">{workspace.notice}</div> : null}{content(data)}</section>
+      <section className="business-admin-content">
+        <header className="business-admin-header">
+          <button
+            className="menu-button"
+            onClick={() => workspace.setMenuOpen(true)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+          <button
+            aria-label={
+              workspace.sidebarCollapsed
+                ? "Mostrar barra lateral"
+                : "Ocultar barra lateral"
+            }
+            className="desktop-sidebar-trigger"
+            onClick={() =>
+              workspace.setSidebarCollapsed(!workspace.sidebarCollapsed)
+            }
+            type="button"
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+          <div>
+            <p className="eyebrow">Administración del negocio</p>
+            <h1>{navigation.find(([id]) => id === workspace.section)?.[1]}</h1>
+          </div>
+          <Link
+            className="visit-business-button"
+            href={`/bisne/${data.business.slug}`}
+            target="_blank"
+          >
+            Visitar mi bisne
+          </Link>
+        </header>
+        {workspace.error ? (
+          <div className="admin-alert error">{workspace.error}</div>
+        ) : null}
+        {workspace.notice ? (
+          <div className="admin-alert success">{workspace.notice}</div>
+        ) : null}
+        {content(data)}
+      </section>
 
-      {workspace.modal === "category" ? <AdminModal title={workspace.editingId ? "Editar categoría" : "Nueva categoría"} subtitle="Configura cómo se presenta esta sección del catálogo." onClose={() => workspace.setModal(null)}><form className="admin-form" onSubmit={workspace.saveCategory}><label>Nombre<input required value={workspace.categoryDraft.name} onChange={(e) => workspace.setCategoryDraft({ ...workspace.categoryDraft, name: e.target.value, slug: workspace.editingId ? workspace.categoryDraft.slug : slugify(e.target.value) })} /></label><label>Identificador web<input required value={workspace.categoryDraft.slug} onChange={(e) => workspace.setCategoryDraft({ ...workspace.categoryDraft, slug: e.target.value })} /></label><label>Descripción<textarea value={workspace.categoryDraft.description} onChange={(e) => workspace.setCategoryDraft({ ...workspace.categoryDraft, description: e.target.value })} /></label><label>Posición<input min="0" type="number" value={workspace.categoryDraft.position} onChange={(e) => workspace.setCategoryDraft({ ...workspace.categoryDraft, position: Number(e.target.value) })} /></label><label className="checkbox-label"><input checked={workspace.categoryDraft.is_visible} onChange={(e) => workspace.setCategoryDraft({ ...workspace.categoryDraft, is_visible: e.target.checked })} type="checkbox" /><span>Visible públicamente</span></label><div className="form-footer"><button className="action-button" disabled={workspace.isSaving}>{workspace.isSaving ? "Guardando…" : "Guardar categoría"}</button></div></form></AdminModal> : null}
-      {workspace.modal === "member" ? <AdminModal title="Crear acceso para el equipo" subtitle="Crearemos su cuenta y la añadiremos directamente a este negocio." onClose={() => workspace.setModal(null)}><form className="admin-form" onSubmit={workspace.addMember}><label>Nombre completo<input required minLength={2} value={workspace.memberDraft.full_name} onChange={(e) => workspace.setMemberDraft({ ...workspace.memberDraft, full_name: e.target.value })} /></label><label>Email<input required type="email" value={workspace.memberDraft.email} onChange={(e) => workspace.setMemberDraft({ ...workspace.memberDraft, email: e.target.value })} /></label><label>Contraseña temporal<input required minLength={8} type="password" value={workspace.memberDraft.password} onChange={(e) => workspace.setMemberDraft({ ...workspace.memberDraft, password: e.target.value })} /><small className="field-help">Compártela de forma segura. Debe tener al menos 8 caracteres.</small></label><label>Rol<select value={workspace.memberDraft.role} onChange={(e) => workspace.setMemberDraft({ ...workspace.memberDraft, role: e.target.value as "admin" | "editor" | "viewer" })}><option value="admin">Admin</option><option value="editor">Editor</option><option value="viewer">Viewer</option></select></label><div className="form-footer"><button className="action-button" disabled={workspace.isSaving}>{workspace.isSaving ? "Creando acceso…" : "Crear cuenta y añadir"}</button></div></form></AdminModal> : null}
-      {workspace.modal === "product" ? <AdminModal title={workspace.editingId ? "Editar producto" : "Nuevo producto"} subtitle="Configura todos los datos del producto." onClose={() => workspace.setModal(null)}><form className="admin-form" onSubmit={workspace.saveProduct}><div className="form-grid"><label>Nombre<input required value={workspace.productDraft.name} onChange={(e) => workspace.setProductDraft({ ...workspace.productDraft, name: e.target.value, slug: workspace.editingId ? workspace.productDraft.slug : slugify(e.target.value) })} /></label><label>Identificador web<input required value={workspace.productDraft.slug} onChange={(e) => workspace.setProductDraft({ ...workspace.productDraft, slug: e.target.value })} /></label></div><label>Precio<input min="0" required step="0.01" type="number" value={workspace.productDraft.price} onChange={(e) => workspace.setProductDraft({ ...workspace.productDraft, price: e.target.value })} /></label><div className="form-grid"><label>Categoría interna<select value={workspace.productDraft.category_id} onChange={(e) => workspace.setProductDraft({ ...workspace.productDraft, category_id: e.target.value })}><option value="">Sin categoría</option>{data.categories.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label><label>Categoría de plataforma<select value={workspace.productDraft.platform_category_id} onChange={(e) => workspace.setProductDraft({ ...workspace.productDraft, platform_category_id: e.target.value })}><option value="">Sin categoría</option>{data.platformCategories.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label></div><label>Descripción<textarea value={workspace.productDraft.description} onChange={(e) => workspace.setProductDraft({ ...workspace.productDraft, description: e.target.value })} /></label><ImagePicker file={workspace.productImage} label={workspace.editingId ? "Reemplazar imagen" : "Imagen del producto"} onChange={workspace.setProductImage} /><div className="business-options"><label className="checkbox-label"><input checked={workspace.productDraft.is_available} onChange={(e) => workspace.setProductDraft({ ...workspace.productDraft, is_available: e.target.checked })} type="checkbox" /><span>Disponible</span></label><label className="checkbox-label"><input checked={workspace.productDraft.is_published} onChange={(e) => workspace.setProductDraft({ ...workspace.productDraft, is_published: e.target.checked })} type="checkbox" /><span>Publicado</span></label></div><label className="checkbox-label"><input checked={workspace.productDraft.track_inventory} onChange={(e) => workspace.setProductDraft({ ...workspace.productDraft, track_inventory: e.target.checked })} type="checkbox" /><span>Controlar inventario</span></label>{workspace.productDraft.track_inventory ? <label>Existencias<input min="0" type="number" value={workspace.productDraft.stock_quantity} onChange={(e) => workspace.setProductDraft({ ...workspace.productDraft, stock_quantity: e.target.value })} /></label> : null}<div className="form-footer"><button className="action-button" disabled={workspace.isSaving}>{workspace.isSaving ? "Guardando…" : "Guardar producto"}</button></div></form></AdminModal> : null}
-      {workspace.modal === "service" ? <AdminModal title={workspace.editingId ? "Editar servicio" : "Nuevo servicio"} subtitle="Configura cómo se presenta este servicio." onClose={() => workspace.setModal(null)}><form className="admin-form" onSubmit={workspace.saveService}><div className="form-grid"><label>Nombre<input required value={workspace.serviceDraft.name} onChange={(e) => workspace.setServiceDraft({ ...workspace.serviceDraft, name: e.target.value })} /></label><label>Identificador web<input required value={workspace.serviceDraft.slug} onChange={(e) => workspace.setServiceDraft({ ...workspace.serviceDraft, slug: e.target.value })} /></label></div><div className="form-grid"><label>Precio desde (opcional)<input min="0" step="0.01" type="number" value={workspace.serviceDraft.price} onChange={(e) => workspace.setServiceDraft({ ...workspace.serviceDraft, price: e.target.value })} /></label><label>Duración en minutos (opcional)<input min="1" type="number" value={workspace.serviceDraft.duration_minutes} onChange={(e) => workspace.setServiceDraft({ ...workspace.serviceDraft, duration_minutes: e.target.value })} /></label></div><div className="form-grid"><label>Categoría interna<select value={workspace.serviceDraft.category_id} onChange={(e) => workspace.setServiceDraft({ ...workspace.serviceDraft, category_id: e.target.value })}><option value="">Sin categoría</option>{data.categories.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label><label>Categoría de plataforma<select value={workspace.serviceDraft.platform_category_id} onChange={(e) => workspace.setServiceDraft({ ...workspace.serviceDraft, platform_category_id: e.target.value })}><option value="">Sin categoría</option>{data.platformCategories.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label></div><label>Descripción<textarea value={workspace.serviceDraft.description} onChange={(e) => workspace.setServiceDraft({ ...workspace.serviceDraft, description: e.target.value })} /></label><ImagePicker file={workspace.serviceImage} label={workspace.editingId ? "Reemplazar imagen" : "Imagen del servicio"} onChange={workspace.setServiceImage} /><div className="business-options"><label className="checkbox-label"><input checked={workspace.serviceDraft.is_available} onChange={(e) => workspace.setServiceDraft({ ...workspace.serviceDraft, is_available: e.target.checked })} type="checkbox" /><span>Disponible</span></label><label className="checkbox-label"><input checked={workspace.serviceDraft.is_published} onChange={(e) => workspace.setServiceDraft({ ...workspace.serviceDraft, is_published: e.target.checked })} type="checkbox" /><span>Publicado</span></label></div><div className="form-footer"><button className="action-button" disabled={workspace.isSaving}>{workspace.isSaving ? "Guardando…" : "Guardar servicio"}</button></div></form></AdminModal> : null}
+      {workspace.modal === "category" ? (
+        <AdminModal
+          title={workspace.editingId ? "Editar categoría" : "Nueva categoría"}
+          subtitle="Configura cómo se presenta esta sección del catálogo."
+          onClose={() => workspace.setModal(null)}
+        >
+          <form className="admin-form" onSubmit={workspace.saveCategory}>
+            <label>
+              Nombre
+              <input
+                required
+                value={workspace.categoryDraft.name}
+                onChange={(e) =>
+                  workspace.setCategoryDraft({
+                    ...workspace.categoryDraft,
+                    name: e.target.value,
+                    slug: workspace.editingId
+                      ? workspace.categoryDraft.slug
+                      : slugify(e.target.value),
+                  })
+                }
+              />
+            </label>
+            <label>
+              Identificador web
+              <input
+                required
+                value={workspace.categoryDraft.slug}
+                onChange={(e) =>
+                  workspace.setCategoryDraft({
+                    ...workspace.categoryDraft,
+                    slug: e.target.value,
+                  })
+                }
+              />
+            </label>
+            <label>
+              Descripción
+              <textarea
+                value={workspace.categoryDraft.description}
+                onChange={(e) =>
+                  workspace.setCategoryDraft({
+                    ...workspace.categoryDraft,
+                    description: e.target.value,
+                  })
+                }
+              />
+            </label>
+            <label>
+              Posición
+              <input
+                min="0"
+                type="number"
+                value={workspace.categoryDraft.position}
+                onChange={(e) =>
+                  workspace.setCategoryDraft({
+                    ...workspace.categoryDraft,
+                    position: Number(e.target.value),
+                  })
+                }
+              />
+            </label>
+            <label className="checkbox-label">
+              <input
+                checked={workspace.categoryDraft.is_visible}
+                onChange={(e) =>
+                  workspace.setCategoryDraft({
+                    ...workspace.categoryDraft,
+                    is_visible: e.target.checked,
+                  })
+                }
+                type="checkbox"
+              />
+              <span>Visible públicamente</span>
+            </label>
+            <div className="form-footer">
+              <button className="action-button" disabled={workspace.isSaving}>
+                {workspace.isSaving ? "Guardando…" : "Guardar categoría"}
+              </button>
+            </div>
+          </form>
+        </AdminModal>
+      ) : null}
+      {workspace.modal === "member" ? (
+        <AdminModal
+          title="Crear acceso para el equipo"
+          subtitle="Crearemos su cuenta y la añadiremos directamente a este negocio."
+          onClose={() => workspace.setModal(null)}
+        >
+          <form className="admin-form" onSubmit={workspace.addMember}>
+            <label>
+              Nombre completo
+              <input
+                required
+                minLength={2}
+                value={workspace.memberDraft.full_name}
+                onChange={(e) =>
+                  workspace.setMemberDraft({
+                    ...workspace.memberDraft,
+                    full_name: e.target.value,
+                  })
+                }
+              />
+            </label>
+            <label>
+              Email
+              <input
+                required
+                type="email"
+                value={workspace.memberDraft.email}
+                onChange={(e) =>
+                  workspace.setMemberDraft({
+                    ...workspace.memberDraft,
+                    email: e.target.value,
+                  })
+                }
+              />
+            </label>
+            <label>
+              Contraseña temporal
+              <input
+                required
+                minLength={8}
+                type="password"
+                value={workspace.memberDraft.password}
+                onChange={(e) =>
+                  workspace.setMemberDraft({
+                    ...workspace.memberDraft,
+                    password: e.target.value,
+                  })
+                }
+              />
+              <small className="field-help">
+                Compártela de forma segura. Debe tener al menos 8 caracteres.
+              </small>
+            </label>
+            <label>
+              Rol
+              <select
+                value={workspace.memberDraft.role}
+                onChange={(e) =>
+                  workspace.setMemberDraft({
+                    ...workspace.memberDraft,
+                    role: e.target.value as "admin" | "editor" | "viewer",
+                  })
+                }
+              >
+                <option value="admin">Admin</option>
+                <option value="editor">Editor</option>
+                <option value="viewer">Viewer</option>
+              </select>
+            </label>
+            <div className="form-footer">
+              <button className="action-button" disabled={workspace.isSaving}>
+                {workspace.isSaving
+                  ? "Creando acceso…"
+                  : "Crear cuenta y añadir"}
+              </button>
+            </div>
+          </form>
+        </AdminModal>
+      ) : null}
+      {workspace.modal === "product" ? (
+        <AdminModal
+          title={workspace.editingId ? "Editar producto" : "Nuevo producto"}
+          subtitle="Configura todos los datos del producto."
+          onClose={() => workspace.setModal(null)}
+        >
+          <form className="admin-form" onSubmit={workspace.saveProduct}>
+            <div className="form-grid">
+              <label>
+                Nombre
+                <input
+                  required
+                  value={workspace.productDraft.name}
+                  onChange={(e) =>
+                    workspace.setProductDraft({
+                      ...workspace.productDraft,
+                      name: e.target.value,
+                      slug: workspace.editingId
+                        ? workspace.productDraft.slug
+                        : slugify(e.target.value),
+                    })
+                  }
+                />
+              </label>
+              <label>
+                Identificador web
+                <input
+                  required
+                  value={workspace.productDraft.slug}
+                  onChange={(e) =>
+                    workspace.setProductDraft({
+                      ...workspace.productDraft,
+                      slug: e.target.value,
+                    })
+                  }
+                />
+              </label>
+            </div>
+            <label>
+              Precio
+              <input
+                min="0"
+                required
+                step="0.01"
+                type="number"
+                value={workspace.productDraft.price}
+                onChange={(e) =>
+                  workspace.setProductDraft({
+                    ...workspace.productDraft,
+                    price: e.target.value,
+                  })
+                }
+              />
+            </label>
+            <div className="form-grid">
+              <label>
+                Categoría interna
+                <select
+                  value={workspace.productDraft.category_id}
+                  onChange={(e) =>
+                    workspace.setProductDraft({
+                      ...workspace.productDraft,
+                      category_id: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Sin categoría</option>
+                  {data.categories.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Categoría de plataforma
+                <select
+                  value={workspace.productDraft.platform_category_id}
+                  onChange={(e) =>
+                    workspace.setProductDraft({
+                      ...workspace.productDraft,
+                      platform_category_id: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Sin categoría</option>
+                  {data.platformCategories.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <label>
+              Descripción
+              <textarea
+                value={workspace.productDraft.description}
+                onChange={(e) =>
+                  workspace.setProductDraft({
+                    ...workspace.productDraft,
+                    description: e.target.value,
+                  })
+                }
+              />
+            </label>
+            <ImagePicker
+              file={workspace.productImage}
+              label={
+                workspace.editingId
+                  ? "Reemplazar imagen"
+                  : "Imagen del producto"
+              }
+              onChange={workspace.setProductImage}
+            />
+            <div className="business-options">
+              <label className="checkbox-label">
+                <input
+                  checked={workspace.productDraft.is_available}
+                  onChange={(e) =>
+                    workspace.setProductDraft({
+                      ...workspace.productDraft,
+                      is_available: e.target.checked,
+                    })
+                  }
+                  type="checkbox"
+                />
+                <span>Disponible</span>
+              </label>
+              <label className="checkbox-label">
+                <input
+                  checked={workspace.productDraft.is_published}
+                  onChange={(e) =>
+                    workspace.setProductDraft({
+                      ...workspace.productDraft,
+                      is_published: e.target.checked,
+                    })
+                  }
+                  type="checkbox"
+                />
+                <span>Publicado</span>
+              </label>
+            </div>
+            <label className="checkbox-label">
+              <input
+                checked={workspace.productDraft.track_inventory}
+                onChange={(e) =>
+                  workspace.setProductDraft({
+                    ...workspace.productDraft,
+                    track_inventory: e.target.checked,
+                  })
+                }
+                type="checkbox"
+              />
+              <span>Controlar inventario</span>
+            </label>
+            {workspace.productDraft.track_inventory ? (
+              <label>
+                Existencias
+                <input
+                  min="0"
+                  type="number"
+                  value={workspace.productDraft.stock_quantity}
+                  onChange={(e) =>
+                    workspace.setProductDraft({
+                      ...workspace.productDraft,
+                      stock_quantity: e.target.value,
+                    })
+                  }
+                />
+              </label>
+            ) : null}
+            <div className="form-footer">
+              <button className="action-button" disabled={workspace.isSaving}>
+                {workspace.isSaving ? "Guardando…" : "Guardar producto"}
+              </button>
+            </div>
+          </form>
+        </AdminModal>
+      ) : null}
+      {workspace.modal === "service" ? (
+        <AdminModal
+          title={workspace.editingId ? "Editar servicio" : "Nuevo servicio"}
+          subtitle="Configura cómo se presenta este servicio."
+          onClose={() => workspace.setModal(null)}
+        >
+          <form className="admin-form" onSubmit={workspace.saveService}>
+            <div className="form-grid">
+              <label>
+                Nombre
+                <input
+                  required
+                  value={workspace.serviceDraft.name}
+                  onChange={(e) =>
+                    workspace.setServiceDraft({
+                      ...workspace.serviceDraft,
+                      name: e.target.value,
+                    })
+                  }
+                />
+              </label>
+              <label>
+                Identificador web
+                <input
+                  required
+                  value={workspace.serviceDraft.slug}
+                  onChange={(e) =>
+                    workspace.setServiceDraft({
+                      ...workspace.serviceDraft,
+                      slug: e.target.value,
+                    })
+                  }
+                />
+              </label>
+            </div>
+            <div className="form-grid">
+              <label>
+                Precio desde (opcional)
+                <input
+                  min="0"
+                  step="0.01"
+                  type="number"
+                  value={workspace.serviceDraft.price}
+                  onChange={(e) =>
+                    workspace.setServiceDraft({
+                      ...workspace.serviceDraft,
+                      price: e.target.value,
+                    })
+                  }
+                />
+              </label>
+              <label>
+                Duración en minutos (opcional)
+                <input
+                  min="1"
+                  type="number"
+                  value={workspace.serviceDraft.duration_minutes}
+                  onChange={(e) =>
+                    workspace.setServiceDraft({
+                      ...workspace.serviceDraft,
+                      duration_minutes: e.target.value,
+                    })
+                  }
+                />
+              </label>
+            </div>
+            <div className="form-grid">
+              <label>
+                Categoría interna
+                <select
+                  value={workspace.serviceDraft.category_id}
+                  onChange={(e) =>
+                    workspace.setServiceDraft({
+                      ...workspace.serviceDraft,
+                      category_id: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Sin categoría</option>
+                  {data.categories.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Categoría de plataforma
+                <select
+                  value={workspace.serviceDraft.platform_category_id}
+                  onChange={(e) =>
+                    workspace.setServiceDraft({
+                      ...workspace.serviceDraft,
+                      platform_category_id: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Sin categoría</option>
+                  {data.platformCategories.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <label>
+              Descripción
+              <textarea
+                value={workspace.serviceDraft.description}
+                onChange={(e) =>
+                  workspace.setServiceDraft({
+                    ...workspace.serviceDraft,
+                    description: e.target.value,
+                  })
+                }
+              />
+            </label>
+            <ImagePicker
+              file={workspace.serviceImage}
+              label={
+                workspace.editingId
+                  ? "Reemplazar imagen"
+                  : "Imagen del servicio"
+              }
+              onChange={workspace.setServiceImage}
+            />
+            <div className="business-options">
+              <label className="checkbox-label">
+                <input
+                  checked={workspace.serviceDraft.is_available}
+                  onChange={(e) =>
+                    workspace.setServiceDraft({
+                      ...workspace.serviceDraft,
+                      is_available: e.target.checked,
+                    })
+                  }
+                  type="checkbox"
+                />
+                <span>Disponible</span>
+              </label>
+              <label className="checkbox-label">
+                <input
+                  checked={workspace.serviceDraft.is_published}
+                  onChange={(e) =>
+                    workspace.setServiceDraft({
+                      ...workspace.serviceDraft,
+                      is_published: e.target.checked,
+                    })
+                  }
+                  type="checkbox"
+                />
+                <span>Publicado</span>
+              </label>
+            </div>
+            <div className="form-footer">
+              <button className="action-button" disabled={workspace.isSaving}>
+                {workspace.isSaving ? "Guardando…" : "Guardar servicio"}
+              </button>
+            </div>
+          </form>
+        </AdminModal>
+      ) : null}
     </main>
   );
 }
