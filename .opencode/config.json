@@ -1,0 +1,22 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "settings": {
+    "autoApprove": false,
+    "confirmCommands": true,
+    "confirmEdits": true
+  },
+  "tools": {
+    "bash": true,
+    "codesearch": true,
+    "edit": true,
+    "glob": true,
+    "grep": true,
+    "read": true,
+    "task": true,
+    "webfetch": true,
+    "websearch": true,
+    "write": true
+  },
+  "version": "1.0.0",
+  "workspace": ".."
+}
