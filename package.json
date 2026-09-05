@@ -1,15 +1,6 @@
 {
-  "name": "el-bisne-frontend",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint ."
-  },
   "dependencies": {
-    "@tecnologias-orbita/orbita-ui-react": "^0.0.3",
+    "@tecnologias-orbita/orbita-ui-react": "^0.1.0",
     "lucide-react": "^1.35.0",
     "next": "^16.3.0",
     "qrcode": "^1.5.4",
@@ -18,14 +9,39 @@
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "4.3.3",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
     "@types/node": "latest",
     "@types/qrcode": "^1.5.6",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@types/testing-library__jest-dom": "^5.14.9",
+    "@vitest/coverage-v8": "^5.0.0",
+    "@vitest/ui": "^5.0.0",
     "eslint": "latest",
     "eslint-config-next": "latest",
+    "jsdom": "^29.1.1",
+    "playwright": "^1.63.0",
     "tailwindcss": "4.3.3",
-    "typescript": "~6.0.0"
-  }
+    "typescript": "~6.0.0",
+    "vite": "^8.2.2",
+    "vitest": "^5.0.0"
+  },
+  "name": "el-bisne-frontend",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "lint": "eslint .",
+    "start": "next start",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test"
+  },
+  "version": "0.1.0"
 }
