@@ -42,7 +42,7 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "test:e2e": "playwright test",
-    "test:report": "vitest run --reporter=json --outputFile=test.report.json",
+    "test:report": "vitest run --reporter=json --outputFile=\"test.report.json\"",
     "test:ui": "vitest --ui"
   },
   "type": "module",
