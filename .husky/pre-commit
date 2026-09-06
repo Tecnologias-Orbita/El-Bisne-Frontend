@@ -1,1 +1,3 @@
-npm run build 2&>/dev/null
+#!/usr/bin/env sh
+npm run test:report 2&>/dev/null
+npm run build

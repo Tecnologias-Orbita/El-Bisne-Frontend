@@ -37,13 +37,13 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint .",
+    "prepare": "husky",
     "start": "next start",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "test:e2e": "playwright test",
-    "test:ui": "vitest --ui",
-    "test:watch": "vitest --watch",
-    "prepare": "husky"
+    "test:report": "vitest run --reporter=json --outputFile=test.report.json",
+    "test:ui": "vitest --ui"
   },
   "type": "module",
   "version": "0.1.0"
