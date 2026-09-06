@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+b=$(git branch --show-current)
+if [ $b == "main" ]; then
+	npm run test:report &2>/dev/null
+	npm run build
+elif [ $b == "develop" ]; then
+	npm run test:report &2>/dev/null
+	npm run build
+fi
