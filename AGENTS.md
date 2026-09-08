@@ -11,9 +11,13 @@
 | Lint (all) | `npm run lint` |
 | Lint single file | `npx eslint path/to/file.ts` |
 | Typecheck | `npx tsc --noEmit` |
-| Run tests | *No test runner configured yet* |
+| Run tests | `vitest` |
+| Run tests with coverage | `vitest --coverage` |
+| Run e2e tests | `playwright test` |
+| Run test UI | `vitest --ui` |
+| Run single test file | `npx vitest run path/to/file.test.{ts,tsx}` |
 
-**No automated test suite exists.** Manual tests are listed in `tests/MANUAL.md`. When adding tests, use Vitest or Jest with React Testing Library; place files under `tests/` or `__tests__/` alongside source.
+**No automated unit test suite is pre-configured beyond Vitest.** Place test files under `tests/` or `**/*.test.{ts,tsx}`. See `tests/MANUAL.md` for manual test procedures.
 
 ## 2. Code Style Guidelines
 
