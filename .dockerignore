@@ -1,0 +1,11 @@
+node_modules
+.next
+.github
+.husky
+.vscode
+.vitest
+tests
+AGENTS.md
+README.md
+LICENSE
+TASKS.md

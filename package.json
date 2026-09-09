@@ -37,7 +37,7 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint .",
-    "prepare": "husky",
+    "prepare": "husky &2>/dev/null",
     "start": "next start",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
