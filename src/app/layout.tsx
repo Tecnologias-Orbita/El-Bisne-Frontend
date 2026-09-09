@@ -1,7 +1,5 @@
-import { Suspense } from "react";
-import { SiteEntryGate } from "@/shared/components/SiteEntryGate";
-import { PublicSiteFooter } from "@/shared/components/PublicSiteFooter";
 import { PublicAccessNav } from "@/shared/components/PublicAccessNav";
+import { PublicSiteFooter } from "@/shared/components/PublicSiteFooter";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
@@ -19,9 +17,6 @@ export default function RootLayout({
         {children}
         <PublicAccessNav />
         <PublicSiteFooter />
-        <Suspense fallback={null}>
-          <SiteEntryGate />
-        </Suspense>
       </body>
     </html>
   );

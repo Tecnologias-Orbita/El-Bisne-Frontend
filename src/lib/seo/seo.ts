@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export function seo(title: string, metadata?: Metadata): Metadata {
   return {
     title: `El Bisne | ${title
-      .replace(/el bisne/i, "")
+      .replace(/^(el bisne)/i, "")
       .replace(/\|/i, "")
       .trim()}`,
     ...metadata,

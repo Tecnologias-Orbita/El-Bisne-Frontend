@@ -20,3 +20,21 @@ export const PrimaryButton: typeof Btn = ({
     </Btn>
   );
 };
+
+export const SecondaryButton: typeof Btn = ({
+  children,
+  className,
+  ...props
+}) => {
+  return (
+    <Btn
+      className={twMerge(
+        "rounded-lg border-green/25 text-green-dark hover:border-green/75 hover:bg-white",
+        (className as string) || "",
+      )}
+      {...props}
+    >
+      {children}
+    </Btn>
+  );
+};
