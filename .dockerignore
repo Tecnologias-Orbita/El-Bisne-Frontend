@@ -2,10 +2,13 @@ node_modules
 .next
 .github
 .husky
+.opencode
 .vscode
 .vitest
 tests
-AGENTS.md
-README.md
-LICENSE
-TASKS.md
+
+*.md
+
+Dockerfile*
+.dockerignore
+docker-compose*.yaml
