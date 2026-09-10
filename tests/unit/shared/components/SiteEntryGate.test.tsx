@@ -1,4 +1,4 @@
-import { SiteEntryGate } from "@/modules/platform-public/pages/WelcomePage";
+import { SiteEntryGate } from "@/modules/platform-public/pages/welcome/WelcomePage";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 

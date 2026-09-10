@@ -2,7 +2,7 @@ import { APP_ROUTER } from "@/lib/route/app-router";
 import ReducedLogo from "@/shared/components/ReducedLogo";
 import { PrimaryButton, SecondaryButton } from "@/shared/ui";
 import { LogInIcon, SearchIcon, StoreIcon } from "lucide-react";
-import SetVisitedCookie from "../components/SetVisitedCookie";
+import SetVisitedCookie from "../../components/SetVisitedCookie";
 
 export default function WelcomePage() {
   return (

@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { DiscoverySlider } from "../components/DiscoverySlider";
-import { usePlatformDiscovery } from "../hooks/usePlatformDiscovery";
+import { DiscoverySlider } from "../../components/DiscoverySlider";
+import { usePlatformDiscovery } from "../../hooks/usePlatformDiscovery";
 import type {
   DiscoveryBusiness,
   DiscoveryProduct,
   DiscoveryService,
-} from "../types/platform-public.types";
+} from "../../types/platform-public.types";
 
 function BusinessLogo({ name, url }: { name: string; url: string | null }) {
   return (
