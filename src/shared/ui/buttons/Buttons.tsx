@@ -11,7 +11,7 @@ export const PrimaryButton: typeof Btn = ({
   return (
     <Btn
       className={twMerge(
-        "rounded-lg border-none bg-green text-white hover:brightness-90 hover:bg-green",
+        "rounded-lg border-none bg-green-500 text-white hover:brightness-90 hover:contrast-125 hover:bg-green-500",
         (className as string) || "",
       )}
       {...props}
@@ -29,7 +29,7 @@ export const SecondaryButton: typeof Btn = ({
   return (
     <Btn
       className={twMerge(
-        "rounded-lg border-green/25 text-green-dark hover:border-green/75 hover:bg-white",
+        "rounded-lg border-green-500/25 text-green-600 hover:border-green-500/75 hover:bg-white",
         (className as string) || "",
       )}
       {...props}
