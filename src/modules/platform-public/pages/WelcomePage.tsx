@@ -6,27 +6,23 @@ import SetVisitedCookie from "../components/SetVisitedCookie";
 
 export default function WelcomePage() {
   return (
-    <div
-      aria-labelledby="entry-title"
-      aria-modal="true"
-      className="fixed inset-0 z-10000 grid place-items-center p-6 bg-[radial-gradient(circle_at_15%_20%,rgba(198,238,71,0.18),transparent_34%),linear-gradient(145deg,#073f35,#0c5a48_54%,#08352f)] sm:p-[14px]"
-      role="dialog"
-    >
+    <div className="relative grid place-items-center p-4 min-h-screen overflow-x-hidden">
+      <picture className="absolute top-0 left-0 size-full -z-10 bg-linear-to-br from-green-700 via-green-600 via-70% to-lime-500 blur-xs rounded-br-[80%]" />
+      <picture className="absolute top-0 left-0 size-full -z-20 bg-green-600 blur-2xl rounded-br-[80%]" />
+      <picture className="absolute top-0 left-0 size-full -z-30 bg-green-700/80 blur-2xl rounded-br-[100%_232%]" />
+      <picture className="absolute top-0 left-0 size-full -z-40 bg-green-600" />
       <SetVisitedCookie />
-      <section className="grid gap-4 w-[min(620px,100%)] px-[clamp(30px,6vw,58px)] py-[clamp(30px,6vw,58px)] border border-white/20 rounded-[32px] bg-white/96 text-center shadow-[0_32px_90px_rgba(0,24,19,0.35)] sm:px-[22px] sm:py-[30px] sm:rounded-[24px]">
-        <ReducedLogo className="size-16 mx-auto" />
-        <h1
-          id="entry-title"
-          className="text-green-dark text-[clamp(2rem,6vw,3.5rem)] leading-none"
-        >
+      <section className="relative z-50 grid gap-4 justify-items-center border border-white/25 bg-cream-100 shadow-2xl w-11/12 max-w-lg rounded-2xl p-8 text-center">
+        <ReducedLogo className="w-12 aspect-square" />
+        <h2 className="text-green-600 max-lg:text-4xl leading-none">
           Bienvenido a <br />
-          El Bisne
-        </h1>
-        <p className="max-w-120 mx-auto text-gray-600 leading-[1.65]">
-          Descubre negocios cubanos, administra el tuyo o empieza a construir su
+          <span className="text-green-500">El Bisne</span>
+        </h2>
+        <p className="text-gray-500">
+          Descubre negocios cubanos, administra el tuyo y empieza a construir su
           presencia digital.
         </p>
-        <div className="grid gap-4">
+        <div className="grid w-full gap-4">
           <PrimaryButton
             link
             href={APP_ROUTER.LOGIN}

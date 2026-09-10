@@ -6,13 +6,53 @@
   --color-lime-*: initial;
   --color-rose-*: initial;
   --color-cian-*: initial;
+  --color-violet-*: initial;
+  --color-wine-*: initial;
 
-  --color-cian: #a1e6c6;
-  --color-rose: #a271d9;
-  --color-cream: #e6d9a8;
-  --color-green: #00733e;
-  --color-green-dark: #175f46;
-  --color-lime: #d7f05c;
+  --color-wine-100: #dfd2d0;
+  --color-wine-200: #bfa4a1;
+  --color-wine-300: #a07771;
+  --color-wine-400: #804942;
+  --color-wine-500: #601c13;
+
+  --color-violet-100: #ece3f7;
+  --color-violet-200: #d4bcf0;
+  --color-violet-300: #c7aae8;
+  --color-violet-400: #b58de1;
+  --color-violet-500: #a271d9;
+
+  --color-cian-100: #ecfaf4;
+  --color-cian-200: #d9f5e8;
+  --color-cian-300: #c7f0dd;
+  --color-cian-400: #b4ebd1;
+  --color-cian-500: #a1e6c6;
+
+  --color-rose-100: #f3ecfa;
+  --color-rose-200: #e6d9f5;
+  --color-rose-300: #dac7f0;
+  --color-rose-400: #cdb4eb;
+  --color-rose-500: #c1a1e6;
+
+  --color-cream-100: #f6f5ef;
+  --color-cream-200: #f5f0dc;
+  --color-cream-300: #f0e8cb;
+  --color-cream-400: #ebe1b9;
+  --color-cream-500: #e6d9a8;
+  --color-cream-600: #d9c77d;
+
+  --color-green-100: #cce3d8;
+  --color-green-200: #99c7b2;
+  --color-green-300: #66ab8b;
+  --color-green-400: #338f65;
+  --color-green-500: #00733e;
+  --color-green-600: #175f46;
+  --color-green-700: #103d30;
+
+  --color-lime-100: #ecf0db;
+  --color-lime-200: #e1ee9d;
+  --color-lime-300: #d7f05c;
+  --color-lime-400: #a4bd2a;
+  --color-lime-500: #758814;
 }
 
 :root {
@@ -41,7 +81,7 @@
   --palette-4-4: #cdb4eb;
   --palette-4-5: #c1a1e6;
   /* Column 5 */
-  --palette-5-1: #faf7ee;
+  --palette-5-1: #f6f5ef;
   --palette-5-2: #f5f0dc;
   --palette-5-3: #f0e8cb;
   --palette-5-4: #ebe1b9;
@@ -70,6 +110,49 @@
   --green-dark: #103d30;
   --lime: #d7f05c;
   --line: #dfe2d9;
+
+  font-size: 16px;
+}
+
+@media screen and (max-width: 1024px) {
+  :root {
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 512px) {
+  :root {
+    font-size: 12px;
+  }
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: bold;
+  }
+  h1 {
+    font-size: 4rem;
+  }
+  h2 {
+    font-size: 3rem;
+  }
+  h3 {
+    font-size: 2.5rem;
+  }
+  h4 {
+    font-size: 2rem;
+  }
+  h5 {
+    font-size: 1.5rem;
+  }
+  h6 {
+    font-size: 0.5rem;
+  }
 }
 
 * {
