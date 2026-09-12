@@ -1,4 +1,4 @@
-import { SiteEntryGate } from "@/modules/platform-public/pages/welcome/WelcomePage";
+import WelcomePage from "@/modules/platform-public/pages/welcome/WelcomePage";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
@@ -13,7 +13,7 @@ vi.mock("@/modules/auth/services/session.service", () => ({
   SESSION_CHANGED_EVENT: "el-bisne:session-changed",
 }));
 
-describe("SiteEntryGate", () => {
+describe("WelcomePage", () => {
   it("returns null when session exists", () => {
     const {
       sessionService,
@@ -24,7 +24,7 @@ describe("SiteEntryGate", () => {
       token_type: "Bearer",
     });
 
-    const { container } = render(<SiteEntryGate />);
+    const { container } = render(<WelcomePage />);
     expect(container.firstChild).toBeNull();
   });
 
@@ -34,7 +34,7 @@ describe("SiteEntryGate", () => {
       useSearchParams: () => new URLSearchParams(),
     }));
 
-    const { container } = render(<SiteEntryGate />);
+    const { container } = render(<WelcomePage />);
     expect(container.firstChild).toBeNull();
   });
 
@@ -44,7 +44,7 @@ describe("SiteEntryGate", () => {
       useSearchParams: () => new URLSearchParams(),
     }));
 
-    const { container } = render(<SiteEntryGate />);
+    const { container } = render(<WelcomePage />);
     expect(container.firstChild).toBeNull();
   });
 });
