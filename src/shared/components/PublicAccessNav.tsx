@@ -1,29 +1,53 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { authService } from "@/modules/auth/services/auth.service";
-import { SESSION_CHANGED_EVENT, sessionService } from "@/modules/auth/services/session.service";
+import {
+  SESSION_CHANGED_EVENT,
+  sessionService,
+} from "@/modules/auth/services/session.service";
+import { Navbar } from "@tecnologias-orbita/orbita-ui-react";
+import { Menu, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { twMerge } from "tailwind-merge";
+import HorizontalLinksList from "../ui/lists/HorizontalList";
 
-export function PublicAccessNav() {
-  const pathname = usePathname();
-  const router = useRouter();
-  const [access, setAccess] = useState<{ label: string; href: string } | null>(null);
+interface Props {
+  logo: React.ReactNode;
+  mobileLogo?: React.ReactNode;
+}
+
+export function PublicAccessNav({ logo, mobileLogo }: Props) {
+  const [access, setAccess] = useState<{ label: string; href: string } | null>(
+    null,
+  );
   const [checkingSession, setCheckingSession] = useState(true);
+  const [logoVisible, setLogoVisible] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const logoRef = useRef(logoVisible);
+
   useEffect(() => {
     let isActive = true;
     const updateAccess = async () => {
       setAccess(null);
       const session = sessionService.get();
-      if (!session) { if (isActive) setCheckingSession(false); return; }
+      if (!session) {
+        if (isActive) setCheckingSession(false);
+        return;
+      }
       if (isActive) setCheckingSession(true);
       try {
         const user = await authService.getCurrentUser(session.access_token);
         if (!isActive) return;
-        if (user.is_platform_admin) { setAccess({ label: "Admin", href: "/admin" }); return; }
+        if (user.is_platform_admin) {
+          setAccess({ label: "Admin", href: "/admin" });
+          return;
+        }
         const businesses = await authService.listManagedBusinesses();
-        if (isActive && businesses[0]) setAccess({ label: "Administrar mi negocio", href: `/admin/businesses/${businesses[0].id}` });
+        if (isActive && businesses[0])
+          setAccess({
+            label: "Administrar mi negocio",
+            href: `/admin/businesses/${businesses[0].id}`,
+          });
       } catch {
         sessionService.clear();
       } finally {
@@ -39,14 +63,62 @@ export function PublicAccessNav() {
       window.removeEventListener("storage", updateAccess);
     };
   }, []);
-  function logout() {
-    sessionService.clear();
-    setAccess(null);
-    router.replace("/");
-  }
-  // Las páginas de cada negocio ya tienen una barra de navegación propia.
-  // Mantener esta navegación global allí creaba dos cabeceras superpuestas.
-  if (pathname.startsWith("/admin") || pathname.startsWith("/bisne/") || pathname === "/login" || pathname === "/crear-negocio") return null;
+
+  useEffect(() => {
+    const onScroll = () => {
+      const navbar = document.querySelector(".__navbar");
+      const inTop = !navbar?.getBoundingClientRect().top;
+      if (logoRef.current !== inTop) setLogoVisible(inTop);
+    };
+
+    window.addEventListener("DOMContentLoaded", onScroll, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("DOMContentLoaded", onScroll);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    logoRef.current = logoVisible;
+  }, [logoVisible]);
+
   if (checkingSession) return null;
-  return access ? <nav aria-label="Cuenta" className="public-access-nav"><Link href={access.href}>{access.label}</Link><button onClick={logout} type="button">Logout</button></nav> : <nav aria-label="Acceso" className="public-access-nav"><Link href="/crear-negocio">Publicar mi negocio</Link><Link href="/login">Iniciar sesión</Link></nav>;
+
+  const isMobile = window.matchMedia("(max-width: 512px)").matches;
+  const actualLogo = isMobile ? (mobileLogo ?? logo) : logo;
+
+  const items = access
+    ? [
+        { text: access.label, href: access.href },
+        { text: "Cerrar sesión", href: "/logout", active: true },
+      ]
+    : [
+        { text: "Publicar mi negocio", href: "/bisne/new" },
+        { text: "Iniciar sesión", href: "/login", active: true },
+      ];
+
+  return (
+    <Navbar.Container
+      autoControlled={false}
+      className={
+        "__navbar bg-[none] shadow-none justify-between items-center border-none"
+      }
+    >
+      <Navbar.Logo
+        className={twMerge(
+          "opacity-0 transition-all delay-200 duration-200",
+          logoVisible && "opacity-100",
+        )}
+      >
+        {actualLogo}
+      </Navbar.Logo>
+
+      {isMobile ? (
+        <></>
+      ) : (
+        <HorizontalLinksList items={items} className="shadow-lg" />
+      )}
+    </Navbar.Container>
+  );
 }
