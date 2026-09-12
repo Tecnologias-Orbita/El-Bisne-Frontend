@@ -15,3 +15,5 @@ export type AuthenticatedUser = {
   full_name: string;
   is_platform_admin: boolean;
 };
+
+export type LoginResponse = TokenPair & AuthenticatedUser;
