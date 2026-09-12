@@ -1,5 +1,3 @@
-import { PublicAccessNav } from "@/shared/components/PublicAccessNav";
-import { PublicSiteFooter } from "@/shared/components/PublicSiteFooter";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
@@ -13,11 +11,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="es" className={inter.className}>
-      <body>
-        {children}
-        <PublicAccessNav />
-        <PublicSiteFooter />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
