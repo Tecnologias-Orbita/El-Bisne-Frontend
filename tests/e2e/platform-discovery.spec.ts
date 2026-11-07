@@ -46,8 +46,8 @@ const discoveryData = {
     name: `Servicio ${index + 1}`,
     slug: `servicio-${index + 1}`,
     description: "Servicio de prueba para el carrusel.",
-    price: "500",
-    currency: "CUP",
+    price: index === 0 ? null : "500",
+    currency: index === 0 ? null : "CUP",
     duration_minutes: 30,
     image_url: null,
     business_logo_url: null,
@@ -76,20 +76,29 @@ async function openDiscoveryPage(
 }
 
 async function getDiscoveryLayout(page: Page) {
-  return page.evaluate(() => ({
-    documentWidth: document.documentElement.scrollWidth,
-    clientWidth: document.documentElement.clientWidth,
-    exploreWidth:
-      document.querySelector("#explore")?.getBoundingClientRect().width ?? 0,
-    sectionWidth:
-      document
-        .querySelector("#explore > div > section")
-        ?.getBoundingClientRect().width ?? 0,
-    sliderWidth: document.querySelector(".discovery-slider")?.clientWidth ?? 0,
-    cardWidth:
-      document.querySelector(".discovery-slider > *")?.getBoundingClientRect()
-        .width ?? 0,
-  }));
+  const slider = page.getByRole("region", { name: "Cafeterías" });
+  const [sliderWidth, cardWidth] = await Promise.all([
+    slider.evaluate((element) => element.clientWidth),
+    slider
+      .locator(":scope > *")
+      .first()
+      .evaluate((element) => element.getBoundingClientRect().width),
+  ]);
+
+  return {
+    ...(await page.evaluate(() => ({
+      documentWidth: document.documentElement.scrollWidth,
+      clientWidth: document.documentElement.clientWidth,
+      exploreWidth:
+        document.querySelector("#explore")?.getBoundingClientRect().width ?? 0,
+      sectionWidth:
+        document
+          .querySelector("#explore > div > section")
+          ?.getBoundingClientRect().width ?? 0,
+    }))),
+    sliderWidth,
+    cardWidth,
+  };
 }
 
 test.describe("Platform discovery responsive layout", () => {
@@ -100,13 +109,50 @@ test.describe("Platform discovery responsive layout", () => {
 
     for (const tab of ["Negocios", "Productos", "Servicios"]) {
       await page.getByRole("button", { name: tab, exact: true }).click();
-      await expect(page.locator(".discovery-slider > *")).toHaveCount(3);
+      await expect(
+        page.getByRole("region", { name: "Cafeterías" }).locator(":scope > *"),
+      ).toHaveCount(3);
 
       const layout = await getDiscoveryLayout(page);
       expect(layout.documentWidth).toBeLessThanOrEqual(layout.clientWidth);
       expect(layout.sectionWidth).toBeLessThanOrEqual(layout.exploreWidth);
       expect(layout.cardWidth).toBeLessThanOrEqual(layout.sliderWidth);
     }
+  });
+
+  test("keeps each card's content and destination specific to its type", async ({
+    page,
+  }) => {
+    await openDiscoveryPage(page, { width: 1440, height: 900 });
+    const slider = page.getByRole("region", { name: "Cafeterías" });
+
+    await page.getByRole("button", { name: "Negocios", exact: true }).click();
+    const businessCard = slider
+      .getByRole("link")
+      .filter({ hasText: "Café 1" })
+      .first();
+    await expect(businessCard).toHaveAttribute("href", "/bisne/cafe-1");
+    await expect(businessCard).toContainText("Negocio local");
+    await expect(businessCard).toContainText("Visitar negocio");
+
+    await page.getByRole("button", { name: "Productos", exact: true }).click();
+    await expect(
+      slider.getByRole("link", { name: "Ver Producto 1" }),
+    ).toHaveAttribute("href", "/bisne/cafe-1/productos/producto-1");
+    await expect(
+      slider.getByRole("link", { name: "Visitar negocio →" }).first(),
+    ).toHaveAttribute("href", "/bisne/cafe-1");
+
+    await page.getByRole("button", { name: "Servicios", exact: true }).click();
+    const serviceCard = slider
+      .getByRole("link")
+      .filter({ hasText: "Servicio 1" })
+      .first();
+    await expect(serviceCard).toHaveAttribute(
+      "href",
+      "/bisne/cafe-1#servicios",
+    );
+    await expect(serviceCard).toContainText("Consultar detalles");
   });
 
   test("constrains desktop cards and keeps the explore anchor below the sticky nav", async ({
