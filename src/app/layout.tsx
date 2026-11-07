@@ -1,16 +1,11 @@
-import { Inter } from "next/font/google";
+import { Inter } from "@/lib/fonts";
 import "./globals.css";
-
-const inter = Inter({
-  weight: "variable",
-  subsets: ["latin-ext"],
-});
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es" className={inter.className}>
+    <html lang="es" className={Inter.className}>
       <body>{children}</body>
     </html>
   );
