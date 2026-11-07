@@ -53,6 +53,18 @@
   --color-lime-300: #d7f05c;
   --color-lime-400: #a4bd2a;
   --color-lime-500: #758814;
+
+  --animate-fade-in: fade-in 0.3s ease-in 0s both;
+  --animate-fade-out: fade-in 0.3s ease-in 0s reverse both;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 }
 
 :root {
@@ -160,6 +172,10 @@
   textarea:focus-visible,
   select:focus-visible {
     @apply outline-2 outline-offset-2;
+  }
+
+  :root {
+    scroll-behavior: smooth;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -2264,8 +2280,8 @@ tbody tr:last-child td {
 }
 .discovery-slider-arrow {
   position: absolute;
-  z-index: 3;
-  top: 50%;
+  z-index: 20;
+  top: 8rem;
   display: grid;
   width: 3rem;
   height: 3rem;

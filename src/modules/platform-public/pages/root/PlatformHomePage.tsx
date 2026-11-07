@@ -2,14 +2,17 @@
 
 import { PublicAccessNav } from "@/shared/components/PublicAccessNav";
 import ReducedLogo from "@/shared/components/ReducedLogo";
+import { HorizontalRatioList } from "@/shared/ui/lists/HorizontalList";
+import { HorizontalListItem } from "@/shared/ui/lists/HorizontalList.types";
 import Image from "next/image";
 import Link from "next/link";
 import { DiscoverySlider } from "../../components/DiscoverySlider";
 import { usePlatformDiscovery } from "../../hooks/usePlatformDiscovery";
-import type {
-  DiscoveryBusiness,
-  DiscoveryProduct,
-  DiscoveryService,
+import {
+  DISCOVERY_TAB,
+  type DiscoveryBusiness,
+  type DiscoveryProduct,
+  type DiscoveryService,
 } from "../../types/platform-public.types";
 import CallToAction from "./sections/CallToAction";
 import HeroSection from "./sections/Hero";
@@ -51,7 +54,7 @@ function BusinessLogo({
 function BusinessCard({ business }: { business: DiscoveryBusiness }) {
   return (
     <Link
-      className="group w-[min(82vw,25rem)] flex-none snap-start overflow-hidden rounded-[1.3rem] border border-[#e0e3da] bg-white text-inherit shadow-[0_14px_45px_rgb(28_52_40_/_7%)] no-underline transition-transform duration-200 ease-[ease] hover:-translate-y-1 [@media(min-width:781px)]:w-[84vw]"
+      className="group w-[min(82vw,25rem)] flex-none snap-start overflow-hidden rounded-[1.3rem] border border-[#e0e3da] bg-white text-inherit shadow-[0_14px_45px_rgb(28_52_40_/_7%)] no-underline transition-transform duration-200 ease-[ease] hover:-translate-y-1"
       href={`/bisne/${business.slug}`}
     >
       <div className="relative grid h-60 place-items-center overflow-hidden bg-[#e5eee8] text-[4rem] font-black text-green-600">
@@ -89,7 +92,7 @@ function BusinessCard({ business }: { business: DiscoveryBusiness }) {
 function ProductCard({ product }: { product: DiscoveryProduct }) {
   const detailHref = `/bisne/${product.business_slug}/productos/${product.slug}`;
   return (
-    <article className="group w-[min(76vw,20.5rem)] flex-none snap-start overflow-hidden rounded-[1.3rem] border border-[#e0e3da] bg-white text-inherit shadow-[0_14px_45px_rgb(28_52_40_/_7%)] no-underline transition-transform duration-200 ease-[ease] hover:-translate-y-1 [@media(min-width:781px)]:w-[72vw]">
+    <article className="group w-[min(76vw,20.5rem)] flex-none snap-start overflow-hidden rounded-[1.3rem] border border-[#e0e3da] bg-white text-inherit shadow-[0_14px_45px_rgb(28_52_40_/_7%)] no-underline transition-transform duration-200 ease-[ease] hover:-translate-y-1">
       <Link
         aria-label={`Ver ${product.name}`}
         className="relative grid h-[15.5rem] place-items-center overflow-hidden bg-[#e5eee8] text-[4rem] font-black text-green-600"
@@ -200,6 +203,24 @@ function ServiceCard({ service }: { service: DiscoveryService }) {
 
 export function PlatformHomePage() {
   const store = usePlatformDiscovery();
+  const TABS: HorizontalListItem[] = [
+    {
+      text: "Negocios",
+      slug: DISCOVERY_TAB.BUSINESSES,
+      active: store.tab === DISCOVERY_TAB.BUSINESSES,
+    },
+    {
+      text: "Productos",
+      slug: DISCOVERY_TAB.PRODUCTS,
+      active: store.tab === DISCOVERY_TAB.PRODUCTS,
+    },
+    {
+      text: "Servicios",
+      slug: DISCOVERY_TAB.SERVICES,
+      active: store.tab === DISCOVERY_TAB.SERVICES,
+    },
+  ];
+
   return (
     <main className="platform-public-page">
       <HeroSection />
@@ -216,48 +237,25 @@ export function PlatformHomePage() {
           <ReducedLogo className="size-12 p-2 rounded-xl bg-white shadow-lg" />
         }
       />
-      <section className="py-[clamp(4rem,8vw,8rem)]" id="explore">
-        <div className="flex items-end justify-between gap-[2rem] px-[clamp(1.25rem,5vw,5rem)] [@media(min-width:781px)]:flex-col [@media(min-width:781px)]:items-stretch">
-          <div>
-            <p className="m-0 text-[0.72rem] font-extrabold uppercase tracking-[0.16em] text-green-600">
-              Explora El Bisne
-            </p>
-            <h2 className="mt-[0.6rem] mb-0 text-[clamp(2.5rem,5vw,5rem)] tracking-[-0.06em]">
-              ¿Qué estás buscando?
-            </h2>
-          </div>
-          <div
-            className="flex rounded-[3rem] border border-[var(--line)] bg-white p-[0.3rem] [@media(min-width:781px)]:w-full"
-            role="tablist"
-          >
-            {(
-              [
-                ["businesses", "Negocios"],
-                ["products", "Productos"],
-                ["services", "Servicios"],
-              ] as const
-            ).map(([id, label]) => (
-              <button
-                aria-selected={store.tab === id}
-                className={`rounded-[2rem] border-0 px-[1.25rem] py-[0.8rem] bg-transparent text-[var(--muted)] [font-weight:850] [@media(min-width:781px)]:flex-1 ${
-                  store.tab === id ? "bg-green-600 text-white" : ""
-                }`}
-                key={id}
-                onClick={() => store.setTab(id)}
-                role="tab"
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="mx-[clamp(1.25rem,5vw,5rem)] mt-[2rem] mb-[4rem] grid grid-cols-[minmax(0,1.5fr)_minmax(15rem,0.5fr)] gap-[1rem] rounded-[1.2rem] border border-[var(--line)] bg-white p-[1rem] shadow-[0_12px_40px_rgb(26_52_39_/_5%)] [@media(min-width:781px)]:grid-cols-[1fr] [@media(min-width:781px)]:mb-[3rem]">
-          <label className="grid gap-[0.45rem]">
-            <span className="text-[0.7rem] uppercase text-[var(--muted)] [font-weight:850]">
-              Buscar por nombre
-            </span>
+      <section
+        className="max-w-5xl scroll-mt-20 px-4 py-8 mx-auto"
+        id="explore"
+      >
+        <article className="w-full flex flex-wrap justify-center md:justify-between items-center gap-4">
+          <h3 className="text-center font-black text-green-600">
+            ¿Qué estás buscando?
+          </h3>
+          <HorizontalRatioList
+            className="shadow-lg"
+            items={TABS}
+            onChange={(i) => store.setTab(TABS[i].slug as DISCOVERY_TAB)}
+          />
+        </article>
+        <section className="rounded-2xl border border-green-700/25 bg-white p-4 shadow-lg mt-4 grid gap-4">
+          <label className="grid gap-2 text-gray-500 font-bold">
+            Buscar por nombre
             <input
-              className="w-full rounded-[0.75rem] border-0 outline-none bg-[#f5f6f1] p-[0.85rem] text-[var(--ink)] [font:inherit] focus:shadow-[0_0_0_2px_rgb(23_95_70_/_20%)]"
+              className="w-full rounded-lg border-0 outline-none bg-cream-100 p-2 text-green-700"
               placeholder={
                 store.tab === "businesses"
                   ? "Ej. Dulce Alma"
@@ -270,12 +268,10 @@ export function PlatformHomePage() {
               onChange={(event) => store.setSearch(event.target.value)}
             />
           </label>
-          <label className="grid gap-[0.45rem]">
-            <span className="text-[0.7rem] uppercase text-[var(--muted)] [font-weight:850]">
-              Categoría
-            </span>
+          <label className="grid gap-2 text-gray-500 font-bold">
+            Categoría
             <select
-              className="w-full rounded-[0.75rem] border-0 outline-none bg-[#f5f6f1] p-[0.85rem] text-[var(--ink)] [font:inherit] focus:shadow-[0_0_0_2px_rgb(23_95_70_/_20%)]"
+              className="w-full rounded-lg border-0 outline-none bg-cream-100 p-2 text-green-700"
               value={store.categoryId}
               onChange={(event) => store.setCategoryId(event.target.value)}
             >
@@ -287,7 +283,7 @@ export function PlatformHomePage() {
               ))}
             </select>
           </label>
-        </div>
+        </section>
         {store.error ? (
           <div className="mb-[1rem] flex items-center justify-between gap-[1rem] rounded-[0.8rem] px-[1rem] py-[0.85rem] bg-[#fbe9e7] text-[0.78rem] text-[#8c2d27]">
             {store.error}
@@ -300,7 +296,7 @@ export function PlatformHomePage() {
         ) : store.sections.length ? (
           <div className="grid gap-[clamp(4rem,7vw,7rem)]">
             {store.sections.map((section) => (
-              <section key={section.category.id}>
+              <section className="min-w-0" key={section.category.id}>
                 <div className="flex items-end justify-between px-[clamp(1.25rem,5vw,5rem)] pb-[1.4rem] [@media(min-width:781px)]:items-start">
                   <h2 className="mt-[0.4rem] mb-0 text-[clamp(2rem,4vw,3.5rem)] tracking-[-0.05em]">
                     {section.category.name}

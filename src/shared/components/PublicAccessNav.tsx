@@ -6,10 +6,10 @@ import {
   sessionService,
 } from "@/modules/auth/services/session.service";
 import { Navbar } from "@tecnologias-orbita/orbita-ui-react";
-import { Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import HorizontalLinksList from "../ui/lists/HorizontalList";
+import { HorizontalLinksList } from "../ui/lists/HorizontalList";
+import MobileNavMenu from "./MobileNavMenu";
 
 interface Props {
   logo: React.ReactNode;
@@ -22,7 +22,6 @@ export function PublicAccessNav({ logo, mobileLogo }: Props) {
   );
   const [checkingSession, setCheckingSession] = useState(true);
   const [logoVisible, setLogoVisible] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const logoRef = useRef(logoVisible);
 
   useEffect(() => {
@@ -115,7 +114,7 @@ export function PublicAccessNav({ logo, mobileLogo }: Props) {
       </Navbar.Logo>
 
       {isMobile ? (
-        <></>
+        <MobileNavMenu items={items} />
       ) : (
         <HorizontalLinksList items={items} className="shadow-lg" />
       )}
