@@ -1,0 +1,37 @@
+interface Props {
+  className?: string;
+}
+
+export default function ReducedBoxLogo({ className }: Props) {
+  return (
+    <svg
+      id="Capa_2"
+      data-name="Capa 2"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 70.5 70.5"
+      className={className}
+    >
+      <g id="Capa_1-2" data-name="Capa 1">
+        <g>
+          <rect
+            className="fill-(--palette-5-1) stroke-0"
+            width="70.5"
+            height="70.5"
+            rx="6.76"
+            ry="6.76"
+          />
+          <g>
+            <polygon
+              className="fill-(--palette-5-6) stroke-0"
+              points="61.89 11.36 46.01 15.61 51.55 21.16 41.41 30.76 39.48 32.3 39.63 32.44 39.55 32.52 45.72 38.36 17.66 64.94 24.14 64.94 50.36 40.1 52.28 38.58 52.13 38.43 52.21 38.35 46.04 32.51 54.7 24.31 60.61 30.21 64.74 14.8 65.96 10.27 61.89 11.36"
+            />
+            <path
+              className="fill-(--palette-6-5) stroke-0"
+              d="M43.86,38.04l-28.39,26.9h-4.09c-3.77,0-6.83-3.06-6.83-6.83v-6.58l3.05-3.87,14.67.93-8.18-12.21,5.42-13.67-14.15,4.01-.81-.67V9.68c0-2.05.9-3.89,2.33-5.14l34.11,24.77-3.44,2.74,6.32,5.98Z"
+            />
+          </g>
+        </g>
+      </g>
+    </svg>
+  );
+}

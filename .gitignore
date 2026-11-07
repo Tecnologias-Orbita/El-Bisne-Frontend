@@ -28,3 +28,10 @@ next-env.d.ts
 
 .vscode
 *.report.*
+
+todo.md
+TODO.md
+
+# IA
+.agents/skills
+.opencode/skills
